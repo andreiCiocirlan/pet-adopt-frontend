@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
 import PetList from "./PetList";
 import UserRegistrationForm from "./UserRegistrationForm";
@@ -7,31 +7,58 @@ import LoginForm from "./LoginForm";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
-function App() {
-  const [personId, setPersonId] = useState(null);
+function Navbar() {
+  const { userId, logout } = useAuth();
   const navigate = useNavigate();
-  const { login } = useAuth();
+
+  function handleLogout() {
+    logout();
+    navigate("/");
+  }
+
+  return (
+    <nav className="bg-indigo-700 p-4 text-white flex">
+      {/* Left side nav links */}
+      <div className="flex gap-4">
+        <Link to="/">Home</Link>
+        {!userId && (
+          <>
+            <Link to="/register">Register</Link>
+            <Link to="/login">Login</Link>
+          </>
+        )}
+      </div>
+
+      {userId && (
+        <div className="ml-auto">
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition"
+          >
+            Logout
+          </button>
+        </div>
+      )}
+    </nav>
+  );
+}
+
+function App() {
+  const { userId, login } = useAuth();  // get userId from auth context
+  const navigate = useNavigate();
 
   function handleUserRegistered(id) {
-    setPersonId(id);
     navigate("/adopt/select-pet");
   }
 
-  function handleLoginSuccess(userData) {
-    login(userData);
-    // Example: assume userData has id
-    setPersonId(userData.id);
+  function handleLoginSuccess(token) {
+    login(token); // expects JWT token, AuthContext will decode and set userId internally
     navigate("/");
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <nav className="bg-indigo-700 p-4 text-white flex gap-4">
-        <Link to="/">Home</Link>
-        <Link to="/register">Register</Link>
-        <Link to="/login">Login</Link>
-      </nav>
-
+      <Navbar />
       <Routes>
         <Route path="/" element={<PetList />} />
         <Route path="/register" element={<UserRegistrationForm onUserRegistered={handleUserRegistered} />} />
@@ -40,7 +67,7 @@ function App() {
           path="/adopt/:petId"
           element={
             <ProtectedRoute>
-              {personId ? <AdoptionRequestFormWrapper personId={personId} /> : <p>Please login first.</p>}
+              {userId ? <AdoptionRequestFormWrapper userId={userId} /> : <p>Please login first.</p>}
             </ProtectedRoute>
           }
         />
@@ -50,9 +77,9 @@ function App() {
   );
 }
 
-function AdoptionRequestFormWrapper({ personId }) {
+function AdoptionRequestFormWrapper({ userId }) {
   const { petId } = useParams();
-  return <AdoptionRequestForm petId={parseInt(petId, 10)} personId={personId} />;
+  return <AdoptionRequestForm petId={parseInt(petId, 10)} userId={userId} />;
 }
 
 export default function AppWrapper() {

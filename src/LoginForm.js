@@ -1,56 +1,87 @@
 import React, { useState } from "react";
+import { useAuth } from "./context/AuthContext";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 
-function LoginForm({ onLoginSuccess }) {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+function LoginForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError(null);
-  };
+  // Get the original location or default to "/"
+  const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null);
 
     try {
       const response = await fetch("http://localhost:8081/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-        credentials: "include",
+        body: JSON.stringify({ email, password }),
       });
 
       if (!response.ok) {
-        throw new Error("Invalid email or password");
+        const errData = await response.json();
+        throw new Error(errData.error || "Login failed");
       }
 
-      // You can parse response or just notify success
-      onLoginSuccess && onLoginSuccess({ id: 1, email: formData.email }); // set user info accordingly
+      const data = await response.json();
+      login(data.token); // Store and decode JWT in AuthContext
+
+      // Redirect user to where they wanted to go before login or home
+      navigate(from, { replace: true });
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-xl font-semibold mb-4">User Login</h2>
-
-      {error && <p className="mb-4 text-red-600">{error}</p>}
-
-      <label className="block mb-2">
-        Email:
-        <input type="email" name="email" value={formData.email} onChange={handleChange} className="block w-full p-2 border rounded" required />
-      </label>
-
-      <label className="block mb-4">
-        Password:
-        <input type="password" name="password" value={formData.password} onChange={handleChange} className="block w-full p-2 border rounded" required />
-      </label>
-
-      <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded">
-        Login
-      </button>
-    </form>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login to Your Account</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && <p className="text-red-600 text-center">{error}</p>}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              className="mt-1 w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              className="mt-1 w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition duration-200"
+          >
+            Login
+          </button>
+        </form>
+        <p className="mt-4 text-sm text-center text-gray-600">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-blue-600 hover:underline">
+            Sign up
+          </Link>
+        </p>
+      </div>
+    </div>
   );
 }
 

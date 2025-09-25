@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { authFetch } from "./utils/authFetch";
 
-function AdoptionRequestForm({ petId, personId }) {
+function AdoptionRequestForm({ petId, userId }) {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
 
@@ -9,10 +10,10 @@ function AdoptionRequestForm({ petId, personId }) {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:8081/api/adoptions', {
+      const response = await authFetch('http://localhost:8081/api/adoptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ petId, personId }),
+        body: JSON.stringify({ petId, userId }),
       });
 
       if (!response.ok) {

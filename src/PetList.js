@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { authFetch } from "./utils/authFetch";
 
 function PetList() {
   const [pets, setPets] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8081/api/pets")
+    authFetch("http://localhost:8081/api/pets")
       .then((res) => res.json())
       .then(setPets)
       .catch(console.error);
