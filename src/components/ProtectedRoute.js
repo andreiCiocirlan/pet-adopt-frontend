@@ -7,8 +7,8 @@ export function ProtectedRoute({ children }) {
   const location = useLocation();
 
   if (!userId) {
-    // Redirect to login page and save current location for redirect after login
-    return <Navigate to="/login" replace state={{ from: location }} />;
+    // Redirect unauthenticated users to login, preserve original location
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;

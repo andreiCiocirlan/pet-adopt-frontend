@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
 import PetList from "./PetList";
+import MyAdoptions from "./MyAdoptions";
 import UserRegistrationForm from "./UserRegistrationForm";
 import AdoptionRequestForm from "./AdoptionRequestForm";
 import LoginForm from "./LoginForm";
@@ -21,6 +22,10 @@ function Navbar() {
       {/* Left side nav links */}
       <div className="flex gap-4">
         <Link to="/">Home</Link>
+
+        {/* Show this only if logged in */}
+        {userId && <Link to="/my-adoptions">My Adoptions</Link>}
+
         {!userId && (
           <>
             <Link to="/register">Register</Link>
@@ -61,6 +66,14 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<PetList />} />
+        <Route
+            path="/my-adoptions"
+            element={
+              <ProtectedRoute>
+                <MyAdoptions />
+              </ProtectedRoute>
+            }
+          />
         <Route path="/register" element={<UserRegistrationForm onUserRegistered={handleUserRegistered} />} />
         <Route path="/login" element={<LoginForm onLoginSuccess={handleLoginSuccess} />} />
         <Route
