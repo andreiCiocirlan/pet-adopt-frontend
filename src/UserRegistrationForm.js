@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function UserRegistrationForm({ onRegistered }) {
-  const [formData, setFormData] = useState({
+   const navigate = useNavigate();
+   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
@@ -56,6 +58,16 @@ function UserRegistrationForm({ onRegistered }) {
       }
 
       setSuccess(true);
+
+      // call parent callback if any
+      const data = await response.json();
+      onRegistered && onRegistered(data.id);
+
+      // redirect after 2 seconds delay
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+
       onRegistered?.();
     } catch (err) {
       setServerError(err.message);
