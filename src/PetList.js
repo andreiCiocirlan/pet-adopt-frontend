@@ -19,6 +19,7 @@ function PetList() {
           <img src={pet.imageUrl} className="w-48 h-48 rounded object-cover mb-4" alt={pet.name} />
           <h2 className="text-xl font-semibold mb-1">{pet.name}</h2>
           <p className="text-gray-600">{pet.breed} | {pet.type}</p>
+          <p className="text-gray-600 mb-4">Medical History: {pet.medicalHistory}</p>
           <p className="text-gray-600 mb-4">Age: {pet.age} years</p>
           <Link
             to={`/adopt/${pet.id}`}
