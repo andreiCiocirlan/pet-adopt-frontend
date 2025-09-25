@@ -1,0 +1,31 @@
+.pet-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.pet-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 280px;
+  padding: 1rem;
+  box-shadow: 2px 2px 5px #aaa;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+
+.pet-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.pet-details div {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #333;
+}
