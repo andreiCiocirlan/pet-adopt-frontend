@@ -23,7 +23,7 @@ function Navbar() {
     <nav className="bg-indigo-700 p-4 text-white flex">
       <div className="flex gap-4">
         <Link to="/">Home</Link>
-        {userId && <Link to="/my-adoptions">My Adoptions</Link>}
+        {userId && <Link to="/my-adoptions">My adoption applications</Link>}
         {!userId && (
           <>
             <Link to="/register">Register</Link>
