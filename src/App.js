@@ -23,7 +23,7 @@ function Navbar() {
       <nav className="bg-indigo-700 p-4 text-white flex items-center">
         {/* Left side nav links */}
         <div className="flex gap-4">
-          <Link to="/">ฅ^•ﻌ•^ฅ</Link>
+          <Link to="/" aria-label="Home" className="text-2xl select-none" style={{ userSelect: "none" }}>ฅ^•ﻌ•^ฅ</Link>
           {userId && <Link to="/my-adoptions">My Adoptions</Link>}
         </div>
 
