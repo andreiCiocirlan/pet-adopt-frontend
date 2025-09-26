@@ -4,7 +4,6 @@ import { authFetch } from "./utils/authFetch";
 import Carousel from "./components/Carousel";
 
 function PetDashboard() {
-  // Filters state with default type 'CAT'
   const [filters, setFilters] = useState({
     type: "CAT",
     breed: "",
@@ -13,7 +12,6 @@ function PetDashboard() {
 
   const [pets, setPets] = useState([]);
 
-  // Handle input changes for filters
   const handleFilterChange = (e) => {
     setFilters({
       ...filters,
@@ -21,7 +19,6 @@ function PetDashboard() {
     });
   };
 
-  // Fetch pets whenever filters change
   useEffect(() => {
     const queryParams = new URLSearchParams();
 
@@ -38,12 +35,13 @@ function PetDashboard() {
   }, [filters]);
 
   return (
-    <div>
-      <div className="p-6 border rounded-lg mb-6 bg-gray-50">
+    <div className="flex p-6 gap-8">
+      {/* Left sidebar filters */}
+      <aside className="w-64 p-4 bg-gray-50 rounded shadow space-y-6 sticky top-20 h-fit">
         <h2 className="text-xl font-semibold mb-4">Filter Pets</h2>
 
-        <div className="mb-4">
-          <label htmlFor="type" className="block font-medium mb-1">
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="type" className="font-medium">
             Animal Type
           </label>
           <select
@@ -51,7 +49,7 @@ function PetDashboard() {
             name="type"
             value={filters.type}
             onChange={handleFilterChange}
-            className="w-full p-2 border rounded"
+            className="p-2 border rounded"
           >
             <option value="CAT">Cat</option>
             <option value="DOG">Dog</option>
@@ -59,8 +57,8 @@ function PetDashboard() {
           </select>
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="breed" className="block font-medium mb-1">
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="breed" className="font-medium">
             Breed
           </label>
           <input
@@ -70,12 +68,12 @@ function PetDashboard() {
             value={filters.breed}
             onChange={handleFilterChange}
             placeholder="Enter breed"
-            className="w-full p-2 border rounded"
+            className="p-2 border rounded"
           />
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="age" className="block font-medium mb-1">
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="age" className="font-medium">
             Age
           </label>
           <input
@@ -85,13 +83,14 @@ function PetDashboard() {
             value={filters.age}
             onChange={handleFilterChange}
             placeholder="Enter age"
-            className="w-full p-2 border rounded"
+            className="p-2 border rounded"
             min="0"
           />
         </div>
-      </div>
+      </aside>
 
-      <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {/* Right content area: pet cards */}
+      <main className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {pets.length === 0 ? (
           <p>No pets found for the selected filters.</p>
         ) : (
@@ -111,7 +110,7 @@ function PetDashboard() {
             </div>
           ))
         )}
-      </div>
+      </main>
     </div>
   );
 }
