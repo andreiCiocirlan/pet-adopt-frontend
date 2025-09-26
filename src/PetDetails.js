@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { authFetch } from "./utils/authFetch";
 import { useAuth } from "./context/AuthContext";
+import Carousel from "./components/Carousel";
 
 function PetDetails() {
   const { petId } = useParams();
@@ -31,7 +32,7 @@ function PetDetails() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded shadow">
-      <img src={pet.imageUrl} alt={pet.name} className="w-full h-72 object-cover rounded mb-4" />
+      <Carousel images={pet.imageUrls || [pet.imageUrl]} />
       <h1 className="text-3xl font-bold mb-2">{pet.name}</h1>
       <p><strong>Breed:</strong> {pet.breed}</p>
       <p><strong>Age:</strong> {pet.age} years</p>
