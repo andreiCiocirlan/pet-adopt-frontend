@@ -20,29 +20,37 @@ function Navbar() {
   }
 
   return (
-    <nav className="bg-indigo-700 p-4 text-white flex">
-      <div className="flex gap-4">
-        <Link to="/">Home</Link>
-        {userId && <Link to="/my-adoptions">My adoption applications</Link>}
-        {!userId && (
-          <>
-            <Link to="/register">Register</Link>
-            <Link to="/login">Login</Link>
-          </>
-        )}
-      </div>
-      {userId && (
-        <div className="ml-auto">
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition"
-          >
-            Logout
-          </button>
+      <nav className="bg-indigo-700 p-4 text-white flex items-center">
+        {/* Left side nav links */}
+        <div className="flex gap-4">
+          <Link to="/">ฅ^•ﻌ•^ฅ</Link>
+          {userId && <Link to="/my-adoptions">My Adoptions</Link>}
         </div>
-      )}
-    </nav>
-  );
+
+        {/* Right side nav links */}
+        <div className="ml-auto flex gap-4 items-center">
+          {!userId && (
+            <>
+              <Link to="/register" className="hover:underline">
+                Register
+              </Link>
+              <Link to="/login" className="hover:underline">
+                Login
+              </Link>
+            </>
+          )}
+
+          {userId && (
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition"
+            >
+              Logout
+            </button>
+          )}
+        </div>
+      </nav>
+    );
 }
 
 function App() {
