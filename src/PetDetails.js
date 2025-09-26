@@ -36,12 +36,18 @@ function PetDetails() {
       <p><strong>Breed:</strong> {pet.breed}</p>
       <p><strong>Age:</strong> {pet.age} years</p>
       <p><strong>Medical History:</strong> {pet.medicalHistory}</p>
-      <button
-        onClick={handleAdoptClick}
-        className="mt-4 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-      >
-        Adopt Me
-      </button>
+      {pet.status === "AVAILABLE" ? (
+          <button
+            onClick={handleAdoptClick}
+            className="mt-4 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Adopt Me
+          </button>
+        ) : (
+          <p className="mt-4 px-6 py-2 bg-gray-400 text-white rounded cursor-not-allowed">
+            Not Available for Adoption
+          </p>
+        )}
     </div>
   );
 }
