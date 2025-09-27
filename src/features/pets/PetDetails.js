@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { authFetch } from "./utils/authFetch";
-import { useAuth } from "./context/AuthContext";
+import { authFetch } from "../auth/utils/authFetch";
+import { useAuth } from "../auth/context/AuthContext";
 import Carousel from "./components/Carousel";
 
 function PetDetails() {

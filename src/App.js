@@ -1,12 +1,12 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
-import PetDashboard from "./PetDashboard";
-import PetDetails from "./PetDetails";
-import MyAppointments from "./MyAppointments";
-import BookAppointment from "./BookAppointment";
-import UserRegistrationForm from "./UserRegistrationForm";
-import LoginForm from "./LoginForm";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import PetDashboard from "./features/pets/PetDashboard";
+import PetDetails from "./features/pets/PetDetails";
+import MyAppointments from "./features/appointments/MyAppointments";
+import BookAppointment from "./features/appointments/BookAppointment";
+import UserRegistrationForm from "./features/auth/UserRegistrationForm";
+import LoginForm from "./features/auth/LoginForm";
+import { AuthProvider, useAuth } from "./features/auth/context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useLocation } from "react-router-dom";
 

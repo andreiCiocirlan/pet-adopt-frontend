@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { authFetch } from "./utils/authFetch";
-import { useAuth } from "./context/AuthContext";
+import { authFetch } from "../auth/utils/authFetch";
+import { useAuth } from "../auth/context/AuthContext";
 
 export default function BookAppointment() {
   const { petId } = useParams();
