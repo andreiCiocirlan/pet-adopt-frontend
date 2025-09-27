@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { authFetch } from "./utils/authFetch";
 import Carousel from "./components/Carousel";
+import { useAuth } from "./context/AuthContext";
 
 function PetDashboard() {
   const [filters, setFilters] = useState({
@@ -11,6 +12,9 @@ function PetDashboard() {
   });
 
   const [pets, setPets] = useState([]);
+  const { userId } = useAuth(); // Get logged-in user info
+  const [loadingDelete, setLoadingDelete] = useState(null); // petId being deleted
+  const [error, setError] = useState(null);
 
   const handleFilterChange = (e) => {
     setFilters({
@@ -39,6 +43,30 @@ function PetDashboard() {
       .then(setPets)
       .catch(console.error);
   }, [filters]);
+
+  // Remove pet function
+  const handleRemovePet = async (petId) => {
+    if (!window.confirm("Are you sure you want to remove this pet?")) return;
+
+    setLoadingDelete(petId);
+    setError(null);
+
+    try {
+      const response = await authFetch(`http://localhost:8081/api/pets/${petId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to remove pet");
+      }
+
+      setPets((currentPets) => currentPets.filter((pet) => pet.id !== petId));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingDelete(null);
+    }
+  };
 
   return (
     <div className="flex p-6 gap-8">
@@ -98,8 +126,9 @@ function PetDashboard() {
 
       {/* Pet listing */}
       <main className="flex-1 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+        {error && <p className="text-red-600 col-span-full">{error}</p>}
         {pets.length === 0 ? (
-          <p className="text-center text-gray-500 font-semibold mt-24">
+          <p className="text-center text-gray-500 font-semibold mt-24 col-span-full">
             No pets found matching your criteria! Try changing filters. 🐾
           </p>
         ) : (
@@ -110,12 +139,24 @@ function PetDashboard() {
             >
               <Carousel images={pet.imageUrls || [pet.imageUrl]} />
               <h2 className="text-xl mt-2 font-bold text-purple-700">{pet.name}</h2>
-              <Link
-                to={`/pets/${pet.id}`}
-                className="mt-3 px-5 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition"
-              >
-                Pet Details
-              </Link>
+              <div className="flex gap-4 mt-3">
+                <Link
+                  to={`/pets/${pet.id}`}
+                  className="px-5 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition"
+                >
+                  Pet Details
+                </Link>
+                {/* Conditionally render Remove Pet button if logged in */}
+                {userId && pet.status === "ADOPTED" && (
+                  <button
+                    onClick={() => handleRemovePet(pet.id)}
+                    disabled={loadingDelete === pet.id}
+                    className="px-5 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition"
+                  >
+                    {loadingDelete === pet.id ? "Removing..." : "Remove Pet"}
+                  </button>
+                )}
+              </div>
             </div>
           ))
         )}
