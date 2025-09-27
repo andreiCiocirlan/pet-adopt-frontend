@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem('authToken'));
   const [userId, setUserId] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
     if (token) {
@@ -16,10 +17,16 @@ export const AuthProvider = ({ children }) => {
         const decoded = jwtDecode(token);
         setUserId(decoded.id);
         setUserEmail(decoded.sub);
+        setRoles(decoded.roles || []);
       } catch (e) {
         setUserId(null);
         setUserEmail(null);
+        setRoles([]);
       }
+    } else {
+      setUserId(null);
+      setUserEmail(null);
+      setRoles([]);
     }
   }, [token]);
 
@@ -31,9 +38,11 @@ export const AuthProvider = ({ children }) => {
       const decoded = jwtDecode(jwtToken);
       setUserId(decoded.id);
       setUserEmail(decoded.sub);
+      setRoles(decoded.roles || []);
     } catch (e) {
       setUserId(null);
       setUserEmail(null);
+      setRoles([]);
     }
   };
 
@@ -41,11 +50,12 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     setUserId(null);
     setUserEmail(null);
+    setRoles([]);
     localStorage.removeItem('authToken');
   };
 
   return (
-    <AuthContext.Provider value={{ token, userId, userEmail, login, logout }}>
+    <AuthContext.Provider value={{ token, userId, userEmail, roles, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

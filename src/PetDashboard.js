@@ -12,7 +12,8 @@ function PetDashboard() {
   });
 
   const [pets, setPets] = useState([]);
-  const { userId } = useAuth(); // Get logged-in user info
+  const { userId, roles } = useAuth(); // Get logged-in user info
+  const isAdmin = roles.includes("ROLE_ADMIN");
   const [loadingDelete, setLoadingDelete] = useState(null); // petId being deleted
   const [error, setError] = useState(null);
 
@@ -146,8 +147,8 @@ function PetDashboard() {
                 >
                   Pet Details
                 </Link>
-                {/* Conditionally render Remove Pet button if logged in */}
-                {userId && pet.status === "ADOPTED" && (
+                {/* Conditionally render Remove Pet button if admin */}
+                {isAdmin && pet.status === "ADOPTED" && (
                   <button
                     onClick={() => handleRemovePet(pet.id)}
                     disabled={loadingDelete === pet.id}
