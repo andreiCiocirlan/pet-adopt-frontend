@@ -68,7 +68,7 @@ export default function BookAppointment() {
       </div>
       <form onSubmit={handleSubmit}>
         <label htmlFor="appointmentDate" className="block mb-2 font-medium">
-          Select a Date:
+          Select a Date and Time:
         </label>
         <DatePicker
           selected={appointmentDate}
