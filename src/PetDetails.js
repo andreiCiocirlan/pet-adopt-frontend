@@ -22,11 +22,11 @@ function PetDetails() {
     return <p>Loading...</p>;
   }
 
-  function handleAdoptClick() {
+  function handleMeetAndGreetClick() {
     if (!userId) {
       navigate("/login", { state: { from: location } });
     } else {
-      navigate(`/adopt/${pet.id}`);
+      navigate(`/book-appointment/${pet.id}`);
     }
   }
 
@@ -34,15 +34,16 @@ function PetDetails() {
     <div className="max-w-3xl mx-auto p-6 bg-white rounded shadow">
       <Carousel images={pet.imageUrls || [pet.imageUrl]} />
       <h1 className="text-3xl font-bold mb-2">{pet.name}</h1>
+      <p><strong>Characteristics:</strong> {pet.characteristics}</p>
       <p><strong>Breed:</strong> {pet.breed}</p>
       <p><strong>Age:</strong> {pet.age} years</p>
-      <p><strong>Medical History:</strong> {pet.medicalHistory}</p>
+      <p><strong>Health:</strong> {pet.health}</p>
       {pet.status === "AVAILABLE" ? (
           <button
-            onClick={handleAdoptClick}
+            onClick={handleMeetAndGreetClick}
             className="mt-4 px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
-            Adopt Me
+            Meet and Greet
           </button>
         ) : (
           <p className="mt-4 px-6 py-2 bg-gray-400 text-white rounded cursor-not-allowed">

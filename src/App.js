@@ -2,9 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useParams } from "react-router-dom";
 import PetDashboard from "./PetDashboard";
 import PetDetails from "./PetDetails";
-import MyAdoptions from "./MyAdoptions";
+import MyAppointments from "./MyAppointments";
+import BookAppointment from "./BookAppointment";
 import UserRegistrationForm from "./UserRegistrationForm";
-import AdoptionRequestForm from "./AdoptionRequestForm";
 import LoginForm from "./LoginForm";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
@@ -24,7 +24,7 @@ function Navbar() {
         {/* Left side nav links */}
         <div className="flex gap-4">
           <Link to="/" aria-label="Home" className="text-2xl select-none" style={{ userSelect: "none" }}>ฅ^•ﻌ•^ฅ</Link>
-          {userId && <Link to="/my-adoptions">My Adoptions</Link>}
+          {userId && <Link to="/my-appointments">My Appointments</Link>}
         </div>
 
         {/* Right side nav links */}
@@ -75,43 +75,20 @@ function App() {
         <Route path="/" element={<PetDashboard />} />
         <Route path="/pets/:petId" element={<PetDetails />} />
         <Route
-          path="/my-adoptions"
+          path="/my-appointments"
           element={
             <ProtectedRoute>
-              <MyAdoptions />
+              <MyAppointments />
             </ProtectedRoute>
           }
         />
         <Route path="/register" element={<UserRegistrationForm onUserRegistered={handleUserRegistered} />} />
         <Route path="/login" element={<LoginForm onLoginSuccess={handleLoginSuccess} />} />
-        <Route
-          path="/adopt/:petId"
-          element={<AdoptProtectedRoute />}
-        />
+        <Route path="/book-appointment/:petId" element={<BookAppointment />} />
         <Route path="*" element={<p>Page not found</p>} />
       </Routes>
     </div>
   );
-}
-
-function AdoptProtectedRoute() {
-  const { userId } = useAuth();
-  const { petId } = useParams();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  React.useEffect(() => {
-    if (!userId) {
-      // Pass current location so we can redirect back after login
-      navigate("/login", { state: { from: location }, replace: true });
-    }
-  }, [userId, navigate, location]);
-
-  if (!userId) {
-    return null; // or loading spinner
-  }
-
-  return <AdoptionRequestForm petId={petId} userId={userId} />;
 }
 
 export default function AppWrapper() {
