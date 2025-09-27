@@ -87,6 +87,7 @@ function PetDashboard() {
             onChange={handleFilterChange}
             className="p-2 rounded border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
+            <option value="">Any</option>
             <option value="CAT">Cat</option>
             <option value="DOG">Dog</option>
             <option value="BIRD">Bird</option>
