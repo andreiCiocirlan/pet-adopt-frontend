@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "./context/AuthContext";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 
@@ -9,30 +10,42 @@ function LoginForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Get the original location or default to "/"
   const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
-
     try {
       const response = await fetch("http://localhost:8081/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
       if (!response.ok) {
         const errData = await response.json();
         throw new Error(errData.error || "Login failed");
       }
-
       const data = await response.json();
-      login(data.token); // Store and decode JWT in AuthContext
+      login(data.token);
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
-      // Redirect user to where they wanted to go before login or home
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const response = await fetch("http://localhost:8081/api/auth/google-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: credentialResponse.credential }),
+      });
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.error || "Google login failed");
+      }
+      const data = await response.json();
+      login(data.token);
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message);
@@ -74,6 +87,12 @@ function LoginForm() {
             Login
           </button>
         </form>
+
+        {/* Google login button */}
+        <div className="mt-6 flex justify-center">
+          <GoogleLogin onSuccess={handleGoogleSuccess} onError={() => setError("Google login failed")} />
+        </div>
+
         <p className="mt-4 text-sm text-center text-gray-600">
           Don't have an account?{" "}
           <Link to="/register" className="text-blue-600 hover:underline">

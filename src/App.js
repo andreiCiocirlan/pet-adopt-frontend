@@ -9,6 +9,7 @@ import LoginForm from "./features/auth/LoginForm";
 import { AuthProvider, useAuth } from "./features/auth/context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { useLocation } from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 function Navbar() {
   const { userId, logout } = useAuth();
@@ -94,9 +95,11 @@ function App() {
 export default function AppWrapper() {
   return (
     <AuthProvider>
-      <Router>
-        <App />
-      </Router>
+      <GoogleOAuthProvider clientId="995686742971-0nb6jhrirbu5a2hofrpfgah39h2gv8rt.apps.googleusercontent.com">
+        <Router>
+          <App />
+        </Router>
+      </GoogleOAuthProvider>
     </AuthProvider>
   );
 }
