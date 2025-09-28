@@ -38,6 +38,20 @@ function PetDetails() {
       <p><strong>Breed:</strong> {pet.breed}</p>
       <p><strong>Age:</strong> {pet.age} years</p>
       <p><strong>Health:</strong> {pet.health}</p>
+
+      {/* Add Clinic info display */}
+      {pet.clinic ? (
+        <div className="mt-4 p-4 border rounded bg-gray-100">
+          <h2 className="text-xl font-semibold mb-2">Clinic Details</h2>
+          <p><strong>Name:</strong> {pet.clinic.name}</p>
+          <p><strong>Address:</strong> {pet.clinic.address}</p>
+          {pet.clinic.phoneNumber && <p><strong>Phone:</strong> {pet.clinic.phoneNumber}</p>}
+          {/* Optionally add maps or links depending on lat/lng */}
+        </div>
+      ) : (
+        <p>No clinic information available.</p>
+      )}
+
       {pet.status === "AVAILABLE" ? (
           <button
             onClick={handleMeetAndGreetClick}
