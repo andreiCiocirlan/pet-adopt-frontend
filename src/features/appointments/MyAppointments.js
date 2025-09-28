@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../auth/context/AuthContext";
 import { authFetch } from "../auth/utils/authFetch";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+
+const mapContainerStyle = { height: "200px", width: "100%" };
 
 export default function MyAppointments() {
   const { userId } = useAuth();
@@ -30,14 +33,23 @@ export default function MyAppointments() {
                 if (!res.ok) throw new Error("Failed to fetch pet details");
                 return res.json();
               })
-              .then(petData => ({ id, name: petData.name, imageUrls: petData.imageUrls }))
+              .then(petData => ({
+                id,
+                name: petData.name,
+                imageUrl: petData.imageUrls?.[0] || "",
+                clinic: petData.clinic, // Include clinic info
+              }))
           )
         );
       })
       .then(petsData => {
         const map = {};
         petsData.forEach(pet => {
-            map[pet.id] = { name: pet.name, imageUrl: pet.imageUrls?.[0] || "" };
+          map[pet.id] = {
+            name: pet.name,
+            imageUrl: pet.imageUrl,
+            clinic: pet.clinic,
+          };
         });
         setPetsMap(map);
       })
@@ -57,23 +69,51 @@ export default function MyAppointments() {
         <p>You have no scheduled appointments.</p>
       ) : (
         <ul>
-          {appointments.map(app => (
-              <li key={app.id} className="border p-4 rounded mb-2 flex items-center gap-4">
-                {petsMap[app.petId]?.imageUrl ? (
-                  <img
-                    src={petsMap[app.petId].imageUrl}
-                    alt={petsMap[app.petId].name}
-                    className="w-20 h-20 object-cover rounded"
-                  />
-                ) : <div className="w-20 h-20 bg-gray-200 rounded" />}
-                <div>
-                  <div>Pet Name: <strong>{petsMap[app.petId]?.name || "Loading..."}</strong></div>
-                  <div>Status: {app.status}</div>
-                  <div>Appointment Date: {new Date(app.appointmentDate).toLocaleString()}</div>
-                  <div>Reason: {app.appointmentReason}</div>
+          {appointments.map(app => {
+            const pet = petsMap[app.petId] || {};
+            const clinic = pet.clinic;
+
+            return (
+              <li key={app.id} className="border p-4 rounded mb-4">
+                <div className="flex items-center gap-4 mb-2">
+                  {pet.imageUrl ? (
+                    <img
+                      src={pet.imageUrl}
+                      alt={pet.name}
+                      className="w-20 h-20 object-cover rounded"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 bg-gray-200 rounded" />
+                  )}
+                  <div>
+                    <div>Pet Name: <strong>{pet.name || "Loading..."}</strong></div>
+                    <div>Status: {app.status}</div>
+                    <div>Appointment Date: {new Date(app.appointmentDate).toLocaleString()}</div>
+                    <div>Reason: {app.appointmentReason}</div>
+                  </div>
                 </div>
+
+                {clinic && clinic.latitude && clinic.longitude && (
+                  <MapContainer
+                    center={[clinic.latitude, clinic.longitude]}
+                    zoom={15}
+                    scrollWheelZoom={false}
+                    style={mapContainerStyle}
+                  >
+                    <TileLayer
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <Marker position={[clinic.latitude, clinic.longitude]}>
+                      <Popup>
+                        {clinic.name}<br />{clinic.address}
+                      </Popup>
+                    </Marker>
+                  </MapContainer>
+                )}
               </li>
-            ))}
+            );
+          })}
         </ul>
       )}
     </div>
