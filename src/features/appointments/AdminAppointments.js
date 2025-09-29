@@ -16,7 +16,7 @@ export default function AdminAppointments() {
   useEffect(() => {
     if (!isAdmin) return;
 
-    authFetch("http://localhost:8081/api/appointments") // assuming this returns all appointments for admin
+    authFetch("http://localhost:8081/api/appointments")
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch appointments");
         return res.json();
@@ -59,15 +59,14 @@ export default function AdminAppointments() {
       });
   }, [isAdmin]);
 
-  // Confirm appointment function
-  function confirmAppointment(appointmentId) {
+  function updateAppointmentStatus(appointmentId, status) {
     authFetch(`http://localhost:8081/api/appointments/${appointmentId}/status`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "CONFIRMED" }),
+      body: JSON.stringify({ status }),
     })
       .then(res => {
-        if (!res.ok) throw new Error("Failed to confirm appointment");
+        if (!res.ok) throw new Error(`Failed to update appointment status to ${status}`);
         return res.json();
       })
       .then(updatedAppointment => {
@@ -77,7 +76,7 @@ export default function AdminAppointments() {
       })
       .catch(err => {
         console.error(err);
-        alert("Error confirming appointment");
+        alert(`Error updating appointment status to ${status}`);
       });
   }
 
@@ -98,7 +97,7 @@ export default function AdminAppointments() {
             const pet = petsMap[app.petId] || {};
             const clinic = pet.clinic;
 
-            const canConfirm = app.status === "PENDING";
+            const canModify = app.status === "PENDING";
 
             return (
               <li key={app.id} className="border border-gray-300 rounded-lg p-6 mb-6 flex flex-col gap-4">
@@ -118,13 +117,23 @@ export default function AdminAppointments() {
                     <p><strong>Appointment Date:</strong> {new Date(app.appointmentDate).toLocaleString()}</p>
                     <p><strong>Reason:</strong> {app.appointmentReason}</p>
                   </div>
-                  {canConfirm && (
-                    <button
-                      onClick={() => confirmAppointment(app.id)}
-                      className="px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
-                    >
-                      Confirm Appointment
-                    </button>
+
+                  {canModify && (
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => updateAppointmentStatus(app.id, "CANCELLED")}
+                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                      >
+                        Reject
+                      </button>
+
+                      <button
+                        onClick={() => updateAppointmentStatus(app.id, "CONFIRMED")}
+                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+                      >
+                        Confirm
+                      </button>
+                    </div>
                   )}
                 </div>
                 {clinic && clinic.latitude && clinic.longitude && (
@@ -133,7 +142,7 @@ export default function AdminAppointments() {
                     zoom={15}
                     scrollWheelZoom={false}
                     style={mapContainerStyle}
-                    className="rounded-lg border border-gray-300"
+                    className="rounded-lg border border-gray-300 mt-4"
                   >
                     <TileLayer
                       attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
