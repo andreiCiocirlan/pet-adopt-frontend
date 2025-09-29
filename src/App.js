@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import PetDashboard from "./features/pets/PetDashboard";
 import PetDetails from "./features/pets/PetDetails";
+import AddPet from "./features/pets/AddPet";
 import MyAppointments from "./features/appointments/MyAppointments";
 import AdminAppointments from "./features/appointments/AdminAppointments";
 import BookAppointment from "./features/appointments/BookAppointment";
@@ -110,6 +111,14 @@ function App() {
           element={
             <AdminRoute>
               <AdminAppointments />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/add-pet"
+          element={
+            <AdminRoute>
+              <AddPet />
             </AdminRoute>
           }
         />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { authFetch } from "../auth/utils/authFetch";
 import Carousel from "../pets/components/Carousel";
 import { useAuth } from "../auth/context/AuthContext";
@@ -12,10 +12,12 @@ function PetDashboard() {
   });
 
   const [pets, setPets] = useState([]);
-  const { userId, roles } = useAuth(); // Get logged-in user info
+  const { roles } = useAuth();
   const isAdmin = roles.includes("ROLE_ADMIN");
-  const [loadingDelete, setLoadingDelete] = useState(null); // petId being deleted
+  const [loadingDelete, setLoadingDelete] = useState(null);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleFilterChange = (e) => {
     setFilters({
@@ -69,6 +71,11 @@ function PetDashboard() {
     }
   };
 
+  // Admin + add pet button handler
+  const handleAddPet = () => {
+    navigate("/add-pet");
+  };
+
   return (
     <div className="flex p-6 gap-8">
       {/* Sidebar filter with a fun cat emoticon */}
@@ -77,9 +84,7 @@ function PetDashboard() {
         <h2 className="text-2xl font-bold text-center text-purple-700">Find Your Purrfect Pet</h2>
 
         <div className="flex flex-col space-y-4">
-          <label htmlFor="type" className="font-semibold text-purple-600">
-            🐾 Type
-          </label>
+          <label htmlFor="type" className="font-semibold text-purple-600">🐾 Type</label>
           <select
             id="type"
             name="type"
@@ -95,9 +100,7 @@ function PetDashboard() {
         </div>
 
         <div className="flex flex-col space-y-2">
-          <label htmlFor="breed" className="font-semibold text-purple-600">
-            🐱 Breed
-          </label>
+          <label htmlFor="breed" className="font-semibold text-purple-600">🐱 Breed</label>
           <input
             type="text"
             id="breed"
@@ -110,9 +113,7 @@ function PetDashboard() {
         </div>
 
         <div className="flex flex-col space-y-2">
-          <label htmlFor="age" className="font-semibold text-purple-600">
-            🎂 Age
-          </label>
+          <label htmlFor="age" className="font-semibold text-purple-600">🎂 Age</label>
           <input
             type="number"
             id="age"
@@ -127,40 +128,63 @@ function PetDashboard() {
       </aside>
 
       {/* Pet listing */}
-      <main className="flex-1 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+      <main className="flex-1">
         {error && <p className="text-red-600 col-span-full">{error}</p>}
+
         {pets.length === 0 ? (
           <p className="text-center text-gray-500 font-semibold mt-24 col-span-full">
             No pets found matching your criteria! Try changing filters. 🐾
           </p>
         ) : (
-          pets.map((pet) => (
-            <div
-              key={pet.id}
-              className="bg-white rounded-lg shadow p-4 flex flex-col items-center hover:shadow-lg transition-shadow duration-300"
-            >
-              <Carousel images={pet.imageUrls || [pet.imageUrl]} />
-              <h2 className="text-xl mt-2 font-bold text-purple-700">{pet.name}</h2>
-              <div className="flex gap-4 mt-3">
-                <Link
-                  to={`/pets/${pet.id}`}
-                  className="px-5 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition"
-                >
-                  Pet Details
-                </Link>
-                {/* Conditionally render Remove Pet button if admin */}
-                {isAdmin && pet.status === "ADOPTED" && (
-                  <button
-                    onClick={() => handleRemovePet(pet.id)}
-                    disabled={loadingDelete === pet.id}
-                    className="px-5 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition"
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+            {pets.map((pet) => (
+              <div
+                key={pet.id}
+                className="bg-white rounded-lg shadow p-4 flex flex-col items-center hover:shadow-lg transition-shadow duration-300"
+              >
+                <Carousel images={pet.imageUrls || [pet.imageUrl]} />
+                <h2 className="text-xl mt-2 font-bold text-purple-700">{pet.name}</h2>
+                <div className="flex gap-4 mt-3">
+                  <Link
+                    to={`/pets/${pet.id}`}
+                    className="px-5 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition"
                   >
-                    {loadingDelete === pet.id ? "Removing..." : "Remove Pet"}
-                  </button>
-                )}
+                    Pet Details
+                  </Link>
+                  {isAdmin && pet.status === "ADOPTED" && (
+                    <button
+                      onClick={() => handleRemovePet(pet.id)}
+                      disabled={loadingDelete === pet.id}
+                      className="px-5 py-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition"
+                    >
+                      {loadingDelete === pet.id ? "Removing..." : "Remove Pet"}
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))
+            ))}
+
+            {/* Show + button as last grid item only if pets > 0 and user is admin */}
+            {pets.length > 0 && isAdmin && (
+              <button
+                  onClick={handleAddPet}
+                  aria-label="Add new pet"
+                  title="Add New Pet"
+                  className="flex flex-col items-center justify-center border-4 border-green-600 rounded-lg hover:bg-green-50 focus:outline-none focus:ring-4 focus:ring-green-300"
+                  style={{ minHeight: "250px", padding: "12px", gap: "12px" }} // big size and spacing
+                >
+                  <span
+                    className="text-green-600 font-extrabold"
+                    style={{ fontSize: "96px", lineHeight: "1" }}
+                  >
+                    +
+                  </span>
+                  <span className="text-green-600 font-semibold text-xl select-none">
+                    Add Pet
+                  </span>
+                </button>
+            )}
+          </div>
         )}
       </main>
     </div>
