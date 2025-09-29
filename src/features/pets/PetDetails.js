@@ -3,6 +3,9 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { authFetch } from "../auth/utils/authFetch";
 import { useAuth } from "../auth/context/AuthContext";
 import Carousel from "./components/Carousel";
+import "../../utils/leafletSetup";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 function PetDetails() {
   const { petId } = useParams();
@@ -79,12 +82,36 @@ function PetDetails() {
       </div>
 
       {pet.clinic ? (
-        <div className="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-inner">
-          <h2 className="text-2xl font-semibold mb-3 text-gray-800">Clinic Details</h2>
-          <p><span className="font-medium">Name:</span> {pet.clinic.name}</p>
-          <p><span className="font-medium">Address:</span> {pet.clinic.address}</p>
-          {pet.clinic.phoneNumber && (
-            <p><span className="font-medium">Phone:</span> {pet.clinic.phoneNumber}</p>
+        <div className="mt-8 p-6 bg-gray-50 border border-gray-200 rounded-lg shadow-inner flex flex-row items-start gap-6">
+          <div className="flex-1 min-w-0">
+            <h2 className="text-2xl font-semibold mb-3 text-gray-800">Clinic Details</h2>
+            <p><span className="font-medium">Name:</span> {pet.clinic.name}</p>
+            <p><span className="font-medium">Address:</span> {pet.clinic.address}</p>
+            {pet.clinic.phoneNumber && (
+              <p><span className="font-medium">Phone:</span> {pet.clinic.phoneNumber}</p>
+            )}
+          </div>
+
+          {pet.clinic.latitude && pet.clinic.longitude && (
+            <div className="flex-none w-[400px] h-[200px] rounded-lg overflow-hidden border border-gray-300 shadow-sm">
+              <MapContainer
+                center={[pet.clinic.latitude, pet.clinic.longitude]}
+                zoom={15}
+                scrollWheelZoom={false}
+                style={{ width: "100%", height: "100%" }}
+                className="rounded-lg"
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+                <Marker position={[pet.clinic.latitude, pet.clinic.longitude]}>
+                  <Popup>
+                    {pet.clinic.name}<br />{pet.clinic.address}
+                  </Popup>
+                </Marker>
+              </MapContainer>
+            </div>
           )}
         </div>
       ) : (

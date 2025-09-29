@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../auth/context/AuthContext";
 import { authFetch } from "../auth/utils/authFetch";
+import "../../utils/leafletSetup";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
