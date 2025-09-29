@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../auth/context/AuthContext";
 import { authFetch } from "../auth/utils/authFetch";
-import "../../utils/leafletSetup";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 const mapContainerStyle = { height: "200px", width: "100%" };
 
 export default function MyAppointments() {
-  const { userId } = useAuth();
+  const { userId, roles } = useAuth();
+  const isAdmin = roles.includes("ROLE_ADMIN");
+  const isUser = roles.includes("ROLE_USER");
+
   const [appointments, setAppointments] = useState([]);
   const [petsMap, setPetsMap] = useState({});
   const [error, setError] = useState(null);
@@ -59,6 +61,28 @@ export default function MyAppointments() {
       });
   }, [userId]);
 
+  function cancelAppointment(appointmentId) {
+    authFetch(`http://localhost:8081/api/appointments/${appointmentId}/status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "CANCELLED" }),
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to cancel appointment");
+        return res.json();
+      })
+      .then(updatedAppointment => {
+        // Update local appointments state to include updated appointment
+        setAppointments(prev =>
+          prev.map(app => (app.id === updatedAppointment.id ? updatedAppointment : app))
+        );
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Error cancelling appointment");
+      });
+  }
+
   if (!userId) {
     return (
       <p className="text-center mt-10 text-gray-600 font-medium">
@@ -83,9 +107,12 @@ export default function MyAppointments() {
         </p>
       ) : (
         <ul>
-          {appointments.map((app) => {
+          {appointments.map(app => {
             const pet = petsMap[app.petId] || {};
             const clinic = pet.clinic;
+
+            // Show Cancel button only for regular users if appointment status is PENDING or CONFIRMED
+            const canCancel = isUser && (app.status === "PENDING" || app.status === "CONFIRMED");
 
             return (
               <li
@@ -134,6 +161,15 @@ export default function MyAppointments() {
                       </Popup>
                     </Marker>
                   </MapContainer>
+                )}
+
+                {canCancel && (
+                  <button
+                    className="mt-4 px-5 py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                    onClick={() => cancelAppointment(app.id)}
+                  >
+                    Cancel
+                  </button>
                 )}
               </li>
             );
