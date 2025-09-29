@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../auth/context/AuthContext";
 import { authFetch } from "../auth/utils/authFetch";
+import { getStatusWithEmoji } from "./statusEmojis";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -133,12 +134,15 @@ export default function MyAppointments() {
                     <div>
                       Pet Name: <strong>{pet.name || "Loading..."}</strong>
                     </div>
-                    <div>Status: <span className="capitalize">{app.status.toLowerCase()}</span></div>
                     <div>
-                      Appointment Date:{" "}
-                      {new Date(app.appointmentDate).toLocaleString()}
+                      Status: <strong>{getStatusWithEmoji(app.status)}</strong>
                     </div>
-                    <div>Reason: {app.appointmentReason}</div>
+                    <div>
+                      Appointment Date: {new Date(app.appointmentDate).toLocaleString()}
+                    </div>
+                    <div>
+                      Reason: {app.appointmentReason}
+                    </div>
                   </div>
                 </div>
 

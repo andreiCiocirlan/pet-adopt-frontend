@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { authFetch } from "../auth/utils/authFetch";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useAuth } from "../auth/context/AuthContext";
+import { getStatusWithEmoji } from "./statusEmojis";
 
 const mapContainerStyle = { height: "200px", width: "100%" };
 
@@ -113,7 +114,7 @@ export default function AdminAppointments() {
                   )}
                   <div className="flex-1">
                     <p><strong>Pet Name:</strong> {pet.name || "Loading..."}</p>
-                    <p><strong>Status:</strong> {app.status}</p>
+                    <p><strong>Status:</strong> {getStatusWithEmoji(app.status)}</p>
                     <p><strong>Appointment Date:</strong> {new Date(app.appointmentDate).toLocaleString()}</p>
                     <p><strong>Reason:</strong> {app.appointmentReason}</p>
                   </div>
