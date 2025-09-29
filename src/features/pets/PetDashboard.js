@@ -78,7 +78,7 @@ function PetDashboard() {
 
         <div className="flex flex-col space-y-4">
           <label htmlFor="type" className="font-semibold text-purple-600">
-            🐾 Animal Type
+            🐾 Type
           </label>
           <select
             id="type"
