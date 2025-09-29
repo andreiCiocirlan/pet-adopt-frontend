@@ -12,6 +12,7 @@ export default function AdminAppointments() {
 
   const [appointments, setAppointments] = useState([]);
   const [petsMap, setPetsMap] = useState({});
+  const [usersMap, setUsersMap] = useState({});
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -26,8 +27,10 @@ export default function AdminAppointments() {
         setAppointments(appointmentData);
 
         const petIds = [...new Set(appointmentData.map(app => app.petId))];
+        const userIds = [...new Set(appointmentData.map(app => app.userId))];
 
-        return Promise.all(
+        // Fetch pets details
+        const fetchPets = Promise.all(
           petIds.map(id =>
             authFetch(`http://localhost:8081/api/pets/${id}`)
               .then(res => {
@@ -42,17 +45,50 @@ export default function AdminAppointments() {
               }))
           )
         );
+
+        // Fetch users details
+        const fetchUsers = Promise.all(
+          userIds.map(id =>
+            authFetch(`http://localhost:8081/api/users/${id}`)
+              .then(res => {
+                if (!res.ok) throw new Error("Failed to fetch user details");
+                return res.json();
+              })
+              .then(userData => ({
+                id,
+                name: userData.name,
+                email: userData.email,
+                phone: userData.phone,
+                address: userData.address,
+                status: userData.status,
+              }))
+          )
+        );
+
+        return Promise.all([fetchPets, fetchUsers]);
       })
-      .then(petsData => {
-        const map = {};
+      .then(([petsData, usersData]) => {
+        const petMap = {};
         petsData.forEach(pet => {
-          map[pet.id] = {
+          petMap[pet.id] = {
             name: pet.name,
             imageUrl: pet.imageUrl,
             clinic: pet.clinic,
           };
         });
-        setPetsMap(map);
+        setPetsMap(petMap);
+
+        const userMap = {};
+        usersData.forEach(user => {
+          userMap[user.id] = {
+            name: user.name,
+            email: user.email,
+            phone: user.phone,
+            address: user.address,
+            status: user.status,
+          };
+        });
+        setUsersMap(userMap);
       })
       .catch(err => {
         console.error(err);
@@ -96,8 +132,8 @@ export default function AdminAppointments() {
         <ul>
           {appointments.map(app => {
             const pet = petsMap[app.petId] || {};
+            const user = usersMap[app.userId] || {};
             const clinic = pet.clinic;
-
             const canModify = app.status === "PENDING";
 
             return (
@@ -114,6 +150,8 @@ export default function AdminAppointments() {
                   )}
                   <div className="flex-1">
                     <p><strong>Pet Name:</strong> {pet.name || "Loading..."}</p>
+                    <p><strong>User Name:</strong> {user.name || "Loading..."}</p>
+                    <p><strong>Phone:</strong> {user.phone || "N/A"}</p>
                     <p><strong>Status:</strong> {getStatusWithEmoji(app.status)}</p>
                      <p><strong>Appointment Date & Time:</strong> {new Date(app.appointmentDate).toLocaleString()}</p>
                     <p><strong>Reason:</strong> {app.appointmentReason}</p>
