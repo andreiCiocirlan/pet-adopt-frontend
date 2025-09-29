@@ -3,8 +3,12 @@ import { useAuth } from "../features/auth/context/AuthContext";
 import { Navigate, useLocation } from "react-router-dom";
 
 export function AdminRoute({ children }) {
-  const { userId, roles } = useAuth();
+  const { userId, roles, loading } = useAuth();
   const location = useLocation();
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   if (!userId) {
     return <Navigate to="/login" state={{ from: location }} replace />;

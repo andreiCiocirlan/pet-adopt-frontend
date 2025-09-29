@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [userId, setUserId] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
   const [roles, setRoles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (token) {
@@ -28,6 +29,8 @@ export const AuthProvider = ({ children }) => {
       setUserEmail(null);
       setRoles([]);
     }
+
+    setLoading(false); // Set loading to false once done
   }, [token]);
 
   const login = (jwtToken) => {
@@ -55,7 +58,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, userId, userEmail, roles, login, logout }}>
+    <AuthContext.Provider value={{ token, userId, userEmail, roles, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
