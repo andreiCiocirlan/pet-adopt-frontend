@@ -33,7 +33,7 @@ function Navbar() {
    }
 
    return (
-     <nav className="bg-indigo-700 p-4 text-white flex items-center">
+     <nav className="bg-indigo-700 p-4 text-white flex items-center sticky top-0 z-50">
        {/* Left side nav links */}
        <div className="flex gap-4">
          <Link
@@ -67,6 +67,12 @@ function Navbar() {
              </Link>
            </>
          )}
+
+        {userId && isAdmin && (
+          <span className="bg-yellow-300 text-yellow-900 text-xs font-semibold mr-3 px-2 py-1 rounded select-none">
+            ADMIN
+          </span>
+        )}
 
          {userId && (
            <button

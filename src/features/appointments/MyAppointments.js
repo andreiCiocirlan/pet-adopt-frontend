@@ -151,7 +151,7 @@ export default function MyAppointments() {
                     center={[clinic.latitude, clinic.longitude]}
                     zoom={15}
                     scrollWheelZoom={false}
-                    style={mapContainerStyle}
+                    style={{ ...mapContainerStyle, position: "relative", zIndex: 0 }}
                     className="rounded-lg border border-gray-300"
                   >
                     <TileLayer

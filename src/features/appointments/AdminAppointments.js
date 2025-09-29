@@ -180,7 +180,7 @@ export default function AdminAppointments() {
                     center={[clinic.latitude, clinic.longitude]}
                     zoom={15}
                     scrollWheelZoom={false}
-                    style={mapContainerStyle}
+                    style={{ ...mapContainerStyle, position: "relative", zIndex: 0 }}
                     className="rounded-lg border border-gray-300 mt-4"
                   >
                     <TileLayer
