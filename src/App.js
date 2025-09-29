@@ -49,10 +49,10 @@ function Navbar() {
          {userId && isUser && <Link to="/my-appointments">My Appointments</Link>}
 
          {/* Show Admin Appointments only for admins */}
-         {userId && isAdmin && <Link to="/admin-appointments">All Appointments</Link>}
+         {userId && isAdmin && <Link to="/admin-appointments">Appointments &#128197;</Link>}
 
          {/* Show Add clinic only for admins */}
-         {userId && isAdmin && <Link to="/add-clinic">Add clinic</Link>}
+         {userId && isAdmin && <Link to="/add-clinic">Add clinic &#127976;</Link>}
        </div>
 
        {/* Right side nav links */}
