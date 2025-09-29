@@ -6,7 +6,7 @@ import { useAuth } from "../auth/context/AuthContext";
 
 function PetDashboard() {
   const [filters, setFilters] = useState({
-    type: "CAT",
+    type: "",
     breed: "",
     age: "",
   });
