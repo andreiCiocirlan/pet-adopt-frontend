@@ -115,7 +115,7 @@ export default function AdminAppointments() {
                   <div className="flex-1">
                     <p><strong>Pet Name:</strong> {pet.name || "Loading..."}</p>
                     <p><strong>Status:</strong> {getStatusWithEmoji(app.status)}</p>
-                    <p><strong>Appointment Date:</strong> {new Date(app.appointmentDate).toLocaleString()}</p>
+                     <p><strong>Appointment Date & Time:</strong> {new Date(app.appointmentDate).toLocaleString()}</p>
                     <p><strong>Reason:</strong> {app.appointmentReason}</p>
                   </div>
 
