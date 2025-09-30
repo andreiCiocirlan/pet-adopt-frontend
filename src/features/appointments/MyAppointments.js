@@ -132,16 +132,16 @@ export default function MyAppointments() {
                   )}
                   <div className="flex flex-col gap-1 text-gray-800">
                     <div>
-                      Pet Name: <strong>{pet.name || "Loading..."}</strong>
+                      <strong>Pet Name:</strong> {pet.name || "Loading..."}
                     </div>
                     <div>
-                      Status: <strong>{getStatusWithEmoji(app.status)}</strong>
+                      <strong>Status:</strong> {getStatusWithEmoji(app.status)}
                     </div>
                     <div>
-                      Appointment Date & Time: {new Date(app.appointmentDate).toLocaleString()}
+                      <strong>Appointment Date & Time:</strong> {new Date(app.appointmentDate).toLocaleString()}
                     </div>
                     <div>
-                      Reason: {app.appointmentReason}
+                      <strong>Reason:</strong> {app.appointmentReason}
                     </div>
                   </div>
                 </div>
