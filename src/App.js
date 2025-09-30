@@ -10,6 +10,7 @@ import {
 import PetDashboard from "./features/pets/PetDashboard";
 import PetDetails from "./features/pets/PetDetails";
 import AddPet from "./features/pets/AddPet";
+import AdoptionCertificate from "./features/pets/AdoptionCertificate";
 import AddClinic from "./features/clinic/AddClinic";
 import MyAppointments from "./features/appointments/MyAppointments";
 import AdminAppointments from "./features/appointments/AdminAppointments";
@@ -53,6 +54,10 @@ function Navbar() {
 
          {/* Show Add clinic only for admins */}
          {userId && isAdmin && <Link to="/add-clinic">Add clinic &#127976;</Link>}
+
+         {/* Show Add clinic only for admins */}
+         {userId && isAdmin && <Link to="/adoption-certificate">Adoption certificate 📜</Link>}
+
        </div>
 
        {/* Right side nav links */}
@@ -137,6 +142,14 @@ function App() {
           element={
             <AdminRoute>
               <AddClinic />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/adoption-certificate"
+          element={
+            <AdminRoute>
+              <AdoptionCertificate />
             </AdminRoute>
           }
         />
