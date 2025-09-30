@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { authFetch } from "../auth/utils/authFetch";
 import { useAuth } from "../auth/context/AuthContext";
 import Carousel from "./components/Carousel";
-import "../../utils/leafletSetup";
+import "./utils/leafletSetup";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 

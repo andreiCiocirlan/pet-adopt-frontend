@@ -1,5 +1,5 @@
 import { authFetch } from "../auth/utils/authFetch";
-import generateAdoptionCertificate from './generateAdoptionCertificate';
+import generateAdoptionCertificate from './utils/generateAdoptionCertificate';
 import React, { useState, useEffect } from 'react';
 
 function AdoptionCertificate() {
