@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import { useNavigate } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
@@ -24,6 +24,7 @@ function LocationMarker({ position, setPosition, setAddress }) {
 
 export default function ClinicCreationForm() {
   const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
   const [position, setPosition] = useState(null);
   const [error, setError] = useState(null);
@@ -32,13 +33,14 @@ export default function ClinicCreationForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError(null);
-    if (!name || !position) {
-      setError("Please provide a name and select a location on the map.");
+    if (!name || !phoneNumber || !position) {
+      setError("Please provide a name, phone number, and select a location on the map.");
       return;
     }
     // Submit clinic data to backend
     const clinicData = {
       name,
+      phoneNumber,
       address,
       latitude: position.lat,
       longitude: position.lng,
@@ -80,7 +82,24 @@ export default function ClinicCreationForm() {
         </div>
 
         <div>
-          <label className="block font-semibold mb-1" htmlFor="address">Address</label>
+          <label className="block font-semibold mb-1" htmlFor="phoneNumber">
+            Phone Number
+          </label>
+          <input
+            id="phoneNumber"
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            required
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
+            placeholder="e.g. +1234567890"
+          />
+        </div>
+
+        <div>
+          <label className="block font-semibold mb-1" htmlFor="address">
+            Address
+          </label>
           <textarea
             id="address"
             value={address}
