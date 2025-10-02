@@ -138,7 +138,7 @@ export default function MyAppointments() {
                       <strong>Status:</strong> {getStatusWithEmoji(app.status)}
                     </div>
                     <div>
-                      <strong>Appointment Date & Time:</strong> {new Date(app.appointmentDate).toLocaleString()}
+                      <strong>Appointment Date & Time:</strong> {new Date(app.appointmentDateTime).toLocaleString()}
                     </div>
                     <div>
                       <strong>Reason:</strong> {app.appointmentReason}

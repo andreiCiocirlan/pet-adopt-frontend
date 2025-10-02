@@ -9,7 +9,7 @@ export default function BookAppointment() {
   const { petId } = useParams();
   const navigate = useNavigate();
   const [pet, setPet] = useState(null);
-  const [appointmentDate, setAppointmentDate] = useState(null);
+  const [appointmentDateTime, setAppointmentDateTime] = useState(null);
   const [error, setError] = useState(null);
   const { userId } = useAuth();
 
@@ -27,7 +27,7 @@ export default function BookAppointment() {
     e.preventDefault();
     setError(null);
 
-    if (!appointmentDate) {
+    if (!appointmentDateTime) {
       setError("Please select an appointment date.");
       return;
     }
@@ -39,7 +39,7 @@ export default function BookAppointment() {
         body: JSON.stringify({
           petId,
           userId,
-          appointmentDate: appointmentDate.toISOString(),
+          appointmentDateTime: appointmentDateTime.toISOString(),
           appointmentReason: "MEET_AND_GREET",
         }),
       });
@@ -67,12 +67,12 @@ export default function BookAppointment() {
         <p className="mt-2 font-bold">{pet.name}</p>
       </div>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="appointmentDate" className="block mb-2 font-medium">
+        <label htmlFor="appointmentDateTime" className="block mb-2 font-medium">
           Select a Date and Time:
         </label>
         <DatePicker
-          selected={appointmentDate}
-          onChange={(date) => setAppointmentDate(date)}
+          selected={appointmentDateTime}
+          onChange={(date) => setAppointmentDateTime(date)}
           minDate={new Date()}
           showTimeSelect
           timeIntervals={15}
@@ -80,7 +80,7 @@ export default function BookAppointment() {
           dateFormat="MMMM d, yyyy HH:mm"
           placeholderText="Select a date and time"
           className="w-full p-2 border rounded"
-          id="appointmentDate"
+          id="appointmentDateTime"
         />
         <button
           type="submit"

@@ -153,7 +153,7 @@ export default function AdminAppointments() {
                     <p><strong>User Name:</strong> {user.name || "Loading..."}</p>
                     <p><strong>Phone:</strong> {user.phone || "N/A"}</p>
                     <p><strong>Status:</strong> {getStatusWithEmoji(app.status)}</p>
-                     <p><strong>Appointment Date & Time:</strong> {new Date(app.appointmentDate).toLocaleString()}</p>
+                     <p><strong>Appointment Date & Time:</strong> {new Date(app.appointmentDateTime).toLocaleString()}</p>
                     <p><strong>Reason:</strong> {app.appointmentReason}</p>
                   </div>
 
