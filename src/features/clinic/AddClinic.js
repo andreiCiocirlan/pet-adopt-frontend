@@ -65,7 +65,7 @@ export default function ClinicCreationForm() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-xl shadow mt-8">
-      <h2 className="text-2xl mb-4 font-bold text-center">Create Clinic</h2>
+      <h2 className="text-2xl mb-4 font-bold text-center">Add Clinic</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <p className="text-red-600">{error}</p>}
 
@@ -129,7 +129,7 @@ export default function ClinicCreationForm() {
           type="submit"
           className="w-full bg-purple-700 text-white p-3 rounded hover:bg-purple-800"
         >
-          Create Clinic
+          Add Clinic
         </button>
       </form>
     </div>
