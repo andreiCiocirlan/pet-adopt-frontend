@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { authFetch } from "../auth/utils/authFetch";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useAuth } from "../auth/context/AuthContext";
@@ -123,7 +124,16 @@ export default function AdminAppointments() {
 
   return (
     <div className="max-w-5xl mx-auto p-8 bg-white rounded-xl shadow mt-8">
-      <h2 className="text-3xl font-bold mb-6 text-gray-900">All Appointments</h2>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-3xl font-bold text-gray-900">All Appointments</h2>
+        <Link
+          to="/admin-appointments/add"
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Add appointment
+        </Link>
+      </div>
+
 
       {error && <p className="text-red-600 mb-4">{error}</p>}
       {appointments.length === 0 ? (

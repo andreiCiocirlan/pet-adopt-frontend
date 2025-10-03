@@ -14,6 +14,7 @@ import AdoptionCertificate from "./features/pets/AdoptionCertificate";
 import AddClinic from "./features/clinic/AddClinic";
 import MyAppointments from "./features/appointments/MyAppointments";
 import AdminAppointments from "./features/appointments/AdminAppointments";
+import AddAppointment from "./features/appointments/AddAppointment";
 import BookAppointment from "./features/appointments/BookAppointment";
 import UserRegistrationForm from "./features/auth/UserRegistrationForm";
 import LoginForm from "./features/auth/LoginForm";
@@ -126,6 +127,14 @@ function App() {
           element={
             <AdminRoute>
               <AdminAppointments />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin-appointments/add"
+          element={
+            <AdminRoute>
+              <AddAppointment />
             </AdminRoute>
           }
         />
