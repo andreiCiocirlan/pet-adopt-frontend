@@ -9,15 +9,24 @@ function PetDashboard() {
     type: "",
     breed: "",
     age: "",
+    clinicId: ""
   });
 
   const [pets, setPets] = useState([]);
+  const [clinics, setClinics] = useState([]);
   const { roles } = useAuth();
   const isAdmin = roles.includes("ROLE_ADMIN");
   const [loadingDelete, setLoadingDelete] = useState(null);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    authFetch("http://localhost:8081/api/clinics")
+      .then(res => res.json())
+      .then(setClinics)
+      .catch(console.error);
+  }, []);
 
   const handleFilterChange = (e) => {
     setFilters({
@@ -37,6 +46,9 @@ function PetDashboard() {
     }
     if (filters.age.trim() !== "") {
       queryParams.append("age", filters.age);
+    }
+    if (filters.clinicId) {
+      queryParams.append("clinicId", filters.clinicId);
     }
 
     const fetchUrl = `http://localhost:8081/api/pets?${queryParams.toString()}`;
@@ -84,6 +96,19 @@ function PetDashboard() {
         <h2 className="text-2xl font-bold text-center text-purple-700">Find Your Purrfect Pet</h2>
 
         <div className="flex flex-col space-y-4">
+          <label htmlFor="clinicId" className="font-semibold text-purple-600">🏥 Clinic</label>
+          <select
+            id="clinicId"
+            name="clinicId"
+            value={filters.clinicId}
+            onChange={handleFilterChange}
+            className="p-2 rounded border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          >
+            <option value="">Any</option> {/* This represents null, no filtering */}
+            {clinics.map(clinic => (
+              <option key={clinic.id} value={clinic.id}>{clinic.name}</option>
+            ))}
+          </select>
           <label htmlFor="type" className="font-semibold text-purple-600">🐾 Type</label>
           <select
             id="type"
