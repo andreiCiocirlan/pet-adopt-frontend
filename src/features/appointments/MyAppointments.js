@@ -113,7 +113,7 @@ export default function MyAppointments() {
             const clinic = pet.clinic;
 
             // Show Cancel button only for regular users if appointment status is PENDING or CONFIRMED
-            const canCancel = isUser && (app.status === "PENDING" || app.status === "CONFIRMED");
+            const canCancel = isUser && (app.status === "PENDING");
 
             return (
               <li
