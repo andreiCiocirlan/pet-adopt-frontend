@@ -5,6 +5,11 @@ import Select from "react-select";
 import { authFetch } from "../auth/utils/authFetch";
 import "react-datepicker/dist/react-datepicker.css";
 
+const appointmentStatuses = [
+  { value: "PENDING", label: "Pending" },
+  { value: "CONFIRMED", label: "Confirmed" }
+];
+
 const appointmentReasons = [
   { value: "MEET_AND_GREET", label: "Meet and Greet" },
   { value: "FOLLOW_UP", label: "Follow Up" },
@@ -18,6 +23,7 @@ export default function AddAppointment() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [appointmentDateTime, setAppointmentDateTime] = useState(null);
   const [appointmentReason, setAppointmentReason] = useState("MEET_AND_GREET");
+  const [appointmentStatus, setAppointmentStatus] = useState("PENDING");
 
   const [pets, setPets] = useState([]);
   const [users, setUsers] = useState([]);
@@ -66,6 +72,10 @@ export default function AddAppointment() {
       setError("Please select an appointment reason.");
       return;
     }
+    if (!appointmentStatus) {
+      setError("Please select an appointment status.");
+      return;
+    }
 
     setSubmitting(true);
 
@@ -74,6 +84,7 @@ export default function AddAppointment() {
       userId: selectedUser.value,
       appointmentDateTime: appointmentDateTime.toISOString(),
       appointmentReason,
+      appointmentStatus
     };
 
     authFetch("http://localhost:8081/api/appointments", {
@@ -156,6 +167,21 @@ export default function AddAppointment() {
             {appointmentReasons.map((reason) => (
               <option key={reason.value} value={reason.value}>
                 {reason.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label>
+          Appointment Status:
+          <select
+            value={appointmentStatus}
+            onChange={(e) => setAppointmentStatus(e.target.value)}
+            className="w-full border border-gray-300 rounded p-2"
+          >
+            {appointmentStatuses.map((status) => (
+              <option key={status.value} value={status.value}>
+                {status.label}
               </option>
             ))}
           </select>
