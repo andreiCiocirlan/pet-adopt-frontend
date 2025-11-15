@@ -144,7 +144,8 @@ export default function AdminAppointments() {
             const pet = petsMap[app.petId] || {};
             const user = usersMap[app.userId] || {};
             const clinic = pet.clinic;
-            const canModify = app.status === "PENDING";
+            const canApproveReject = app.status === "PENDING";
+            const canMarkAttendance = app.status === "CONFIRMED";
 
             return (
               <li key={app.id} className="border border-gray-300 rounded-lg p-6 mb-6 flex flex-col gap-4">
@@ -167,7 +168,7 @@ export default function AdminAppointments() {
                     <p><strong>Reason:</strong> {app.appointmentReason}</p>
                   </div>
 
-                  {canModify && (
+                  {canApproveReject && (
                     <div className="flex flex-col gap-2">
                       <button
                         onClick={() => updateAppointmentStatus(app.id, "CANCELLED")}
@@ -181,6 +182,23 @@ export default function AdminAppointments() {
                         className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
                       >
                         Confirm
+                      </button>
+                    </div>
+                  )}
+                  {canMarkAttendance && (
+                    <div className="flex flex-col gap-2">
+                      <button
+                        onClick={() => updateAppointmentStatus(app.id, "COMPLETED")}
+                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+                      >
+                        Mark Completed
+                      </button>
+
+                      <button
+                        onClick={() => updateAppointmentStatus(app.id, "NO_SHOW")}
+                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                      >
+                        No Show
                       </button>
                     </div>
                   )}
