@@ -8,6 +8,8 @@ export function getStatusWithEmoji(status) {
       return "CANCELLED ❌";
     case "CONFIRMED":
       return "CONFIRMED ✅";
+    case "NO_SHOW":
+      return "NO SHOW ❌";
     default:
       return status;
   }
