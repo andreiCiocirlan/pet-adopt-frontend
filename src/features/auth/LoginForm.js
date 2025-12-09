@@ -26,7 +26,7 @@ function LoginForm() {
         throw new Error(errData.error || "Login failed");
       }
       const data = await response.json();
-      login(data.token);
+      login(data);
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message);
@@ -45,7 +45,7 @@ function LoginForm() {
         throw new Error(errData.error || "Google login failed");
       }
       const data = await response.json();
-      login(data.token);
+      login(data);
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message);
