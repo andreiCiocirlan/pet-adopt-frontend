@@ -15,11 +15,21 @@ export default function AdminAppointments() {
   const [petsMap, setPetsMap] = useState({});
   const [usersMap, setUsersMap] = useState({});
   const [error, setError] = useState(null);
+  const [filterType, setFilterType] = useState("ALL"); // ALL | TO_APPROVE | MARK_ATTENDANCE
 
-  useEffect(() => {
-    if (!isAdmin) return;
+  function buildStatusQuery(filter) {
+    if (filter === "TO_APPROVE") {
+      return "?status=PENDING";
+    }
+    if (filter === "MARK_ATTENDANCE") {
+      return "?status=CONFIRMED";
+    }
+    return ""; // ALL
+  }
 
-    authFetch("http://localhost:8081/api/appointments")
+  function fetchAppointments(currentFilter) {
+    const query = buildStatusQuery(currentFilter);
+    authFetch(`http://localhost:8081/api/appointments${query}`)
       .then(res => {
         if (!res.ok) throw new Error("Failed to fetch appointments");
         return res.json();
@@ -30,7 +40,6 @@ export default function AdminAppointments() {
         const petIds = [...new Set(appointmentData.map(app => app.petId))];
         const userIds = [...new Set(appointmentData.map(app => app.userId))];
 
-        // Fetch pets details
         const fetchPets = Promise.all(
           petIds.map(id =>
             authFetch(`http://localhost:8081/api/pets/${id}`)
@@ -47,7 +56,6 @@ export default function AdminAppointments() {
           )
         );
 
-        // Fetch users details
         const fetchUsers = Promise.all(
           userIds.map(id =>
             authFetch(`http://localhost:8081/api/users/${id}`)
@@ -95,7 +103,13 @@ export default function AdminAppointments() {
         console.error(err);
         setError(err.message);
       });
-  }, [isAdmin]);
+    }
+
+
+  useEffect(() => {
+    if (!isAdmin) return;
+    fetchAppointments(filterType);
+  }, [isAdmin, filterType]);
 
   function updateAppointmentStatus(appointmentId, status) {
     authFetch(`http://localhost:8081/api/appointments/${appointmentId}/status`, {
@@ -111,6 +125,7 @@ export default function AdminAppointments() {
         setAppointments(prev =>
           prev.map(app => (app.id === updatedAppointment.id ? updatedAppointment : app))
         );
+        fetchAppointments(filterType); // hard-refresh after appointment changes status
       })
       .catch(err => {
         console.error(err);
@@ -125,13 +140,25 @@ export default function AdminAppointments() {
   return (
     <div className="max-w-5xl mx-auto p-8 bg-white rounded-xl shadow mt-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-gray-900">All Appointments</h2>
-        <Link
-          to="/admin-appointments/add"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Add appointment
-        </Link>
+        <h2 className="text-3xl font-bold text-gray-900">Appointments</h2>
+        <div className="flex items-center gap-4">
+            <select
+              value={filterType}
+              onChange={e => setFilterType(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="ALL">All</option>
+              <option value="TO_APPROVE">To approve</option>
+              <option value="MARK_ATTENDANCE">Mark attendance</option>
+            </select>
+
+            <Link
+              to="/admin-appointments/add"
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Add appointment
+            </Link>
+        </div>
       </div>
 
 
