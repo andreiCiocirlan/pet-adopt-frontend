@@ -12,6 +12,7 @@ import PetDetails from "./features/pets/PetDetails";
 import AddPet from "./features/pets/AddPet";
 import AdoptionCertificate from "./features/pets/AdoptionCertificate";
 import AddClinic from "./features/clinic/AddClinic";
+import MyProfile from "./features/user/MyProfile";
 import MyAppointments from "./features/appointments/MyAppointments";
 import AdminAppointments from "./features/appointments/AdminAppointments";
 import AddAppointment from "./features/appointments/AddAppointment";
@@ -47,7 +48,9 @@ function Navbar() {
            ฅ^•ﻌ•^ฅ
          </Link>
 
-         {/* Show My Appointments only for regular users */}
+         {/* Show Profile and Appointments only for regular users */}
+         {userId && isUser && <Link to="/profile">Profile</Link>}
+
          {userId && isUser && <Link to="/appointments">Appointments</Link>}
 
          {/* Show Admin Appointments only for admins */}
@@ -114,6 +117,14 @@ function App() {
       <Routes>
         <Route path="/" element={<PetDashboard />} />
         <Route path="/pets/:petId" element={<PetDetails />} />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <MyProfile />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/appointments"
           element={
