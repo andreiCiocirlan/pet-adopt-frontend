@@ -48,7 +48,7 @@ function Navbar() {
          </Link>
 
          {/* Show My Appointments only for regular users */}
-         {userId && isUser && <Link to="/my-appointments">My Appointments</Link>}
+         {userId && isUser && <Link to="/appointments">Appointments</Link>}
 
          {/* Show Admin Appointments only for admins */}
          {userId && isAdmin && <Link to="/admin-appointments">Appointments &#128197;</Link>}
@@ -115,7 +115,7 @@ function App() {
         <Route path="/" element={<PetDashboard />} />
         <Route path="/pets/:petId" element={<PetDetails />} />
         <Route
-          path="/my-appointments"
+          path="/appointments"
           element={
             <ProtectedRoute>
               <MyAppointments />
