@@ -17,6 +17,7 @@ export default function MyProfile() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // Load current user profile
   useEffect(() => {
     if (!userId) return;
 
@@ -43,19 +44,36 @@ export default function MyProfile() {
       .finally(() => setLoading(false));
   }, [userId]);
 
+  function validateForm() {
+    if (!formData.name.trim()) {
+      setError("Name is required");
+      return false;
+    }
+    if (formData.name.length < 2 || formData.name.length > 100) {
+      setError("Name must be between 2 and 100 characters");
+      return false;
+    }
+    if (!formData.phone.trim()) {
+      setError("Phone is required");
+      return false;
+    }
+    return true;
+  }
+
   function handleChange(e) {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setError(""); // Clear error on any change
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    setSaving(true);
     setError("");
     setSuccess("");
+
+    if (!validateForm()) return;
+
+    setSaving(true);
 
     authFetch(`http://localhost:8081/api/users/me`, {
       method: "PUT",
@@ -63,14 +81,16 @@ export default function MyProfile() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: formData.name,
-        phone: formData.phone,
-        address: formData.address,
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        address: formData.address?.trim() || "",
       }),
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error("Failed to update profile");
+          return res.json().then((err) => {
+            throw new Error(err.message || `Error: ${res.status}`);
+          });
         }
         return res.json();
       })
@@ -114,35 +134,39 @@ export default function MyProfile() {
           />
         </div>
 
-        {/* Name */}
+        {/* Name - required with validation */}
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="name">
-            Name
+            Name <span className="text-red-500">*</span>
           </label>
           <input
             id="name"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
+            className={`w-full border rounded px-3 py-2 transition-colors focus:ring-2 focus:ring-indigo-200 ${
+              formData.name.length > 0 && (formData.name.length < 2 || formData.name.length > 100)
+                ? "border-red-500 focus:border-red-500"
+                : "border-gray-300 focus:border-indigo-500"
+            }`}
           />
         </div>
 
-        {/* Phone */}
+        {/* Phone - required */}
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="phone">
-            Phone
+            Phone <span className="text-red-500">*</span>
           </label>
           <input
             id="phone"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
           />
         </div>
 
-        {/* Address */}
+        {/* Address - optional */}
         <div>
           <label className="block text-sm font-medium mb-1" htmlFor="address">
             Address
@@ -152,7 +176,7 @@ export default function MyProfile() {
             name="address"
             value={formData.address}
             onChange={handleChange}
-            className="w-full border rounded px-3 py-2"
+            className="w-full border rounded px-3 py-2 border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
             rows={3}
           />
         </div>
@@ -160,7 +184,7 @@ export default function MyProfile() {
         <button
           type="submit"
           disabled={saving}
-          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-60"
+          className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors w-full"
         >
           {saving ? "Saving..." : "Save changes"}
         </button>
