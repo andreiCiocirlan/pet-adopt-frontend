@@ -49,15 +49,15 @@ function Navbar() {
          </Link>
 
          {/* Show Profile and Appointments only for regular users */}
-         {userId && isUser && <Link to="/profile">Profile</Link>}
+         {userId && isUser && <Link to="/profile">Profile 📝</Link>}
 
-         {userId && isUser && <Link to="/appointments">Appointments</Link>}
+         {userId && isUser && <Link to="/appointments">Appointments 📅</Link>}
 
          {/* Show Admin Appointments only for admins */}
-         {userId && isAdmin && <Link to="/admin-appointments">Appointments &#128197;</Link>}
+         {userId && isAdmin && <Link to="/admin-appointments">Appointments 📅</Link>}
 
          {/* Show Add clinic only for admins */}
-         {userId && isAdmin && <Link to="/add-clinic">Add clinic &#127976;</Link>}
+         {userId && isAdmin && <Link to="/add-clinic">Add clinic 🏥</Link>}
 
          {/* Show Add clinic only for admins */}
          {userId && isAdmin && <Link to="/adoption-certificate">Adoption certificate 📜</Link>}
