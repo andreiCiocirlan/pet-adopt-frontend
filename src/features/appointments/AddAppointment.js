@@ -92,8 +92,12 @@ export default function AddAppointment() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(reqBody),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to create appointment");
+      .then(async (res) => {
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          const errorMessage = errorData.error || "Failed to create appointment";
+          throw new Error(errorMessage);
+        }
         return res.json();
       })
       .then(() => {

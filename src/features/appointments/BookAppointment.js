@@ -45,7 +45,9 @@ export default function BookAppointment() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to book appointment");
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.error || "Failed to book appointment";
+        throw new Error(errorMessage);
       }
 
       navigate("/appointments"); // redirect to appointments page
