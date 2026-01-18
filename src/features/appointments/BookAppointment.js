@@ -48,7 +48,7 @@ export default function BookAppointment() {
         throw new Error("Failed to book appointment");
       }
 
-      navigate("/my-appointments"); // redirect to appointments page
+      navigate("/appointments"); // redirect to appointments page
     } catch (err) {
       setError(err.message);
     }
