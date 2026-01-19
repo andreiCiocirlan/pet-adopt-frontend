@@ -220,7 +220,7 @@ function PetDashboard() {
                   onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
                   className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
-                  <option value={2}>2 per page</option>
+                  <option value={5}>5 per page</option>
                   <option value={10}>10 per page</option>
                   <option value={20}>20 per page</option>
                   <option value={50}>50 per page</option>
