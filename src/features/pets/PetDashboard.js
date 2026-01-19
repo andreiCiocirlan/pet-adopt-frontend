@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { authFetch } from "../auth/utils/authFetch";
 import Carousel from "../pets/components/Carousel";
@@ -33,45 +33,47 @@ function PetDashboard() {
       .catch(console.error);
   }, []);
 
-  const fetchPets = async (pageNo = 0, pageSize = 10) => {
-    setLoadingPets(true);
-    setError(null);
+  const fetchPets = useCallback(
+    async (pageNo = 0, pageSize = 10) => {
+      setLoadingPets(true);
+      setError(null);
 
-    const queryParams = new URLSearchParams();
+      const queryParams = new URLSearchParams();
 
-    if (filters.type) queryParams.append("animalType", filters.type);
-    if (filters.breed.trim()) queryParams.append("breed", filters.breed);
-    if (filters.age) queryParams.append("age", filters.age);
-    if (filters.clinicId) queryParams.append("clinicId", filters.clinicId);
+      if (filters.type) queryParams.append("animalType", filters.type);
+      if (filters.breed.trim()) queryParams.append("breed", filters.breed);
+      if (filters.age) queryParams.append("age", filters.age);
+      if (filters.clinicId) queryParams.append("clinicId", filters.clinicId);
 
-    queryParams.append("pageNo", pageNo.toString());
-    queryParams.append("pageSize", pageSize.toString());
+      queryParams.append("pageNo", pageNo.toString());
+      queryParams.append("pageSize", pageSize.toString());
 
-    const fetchUrl = `http://localhost:8081/api/pets?${queryParams.toString()}`;
+      const fetchUrl = `http://localhost:8081/api/pets?${queryParams.toString()}`;
 
-    try {
-      const response = await authFetch(fetchUrl);
-      const data = await response.json();
+      try {
+        const response = await authFetch(fetchUrl);
+        const data = await response.json();
 
-      // Handle Page<PetDto> response structure
-      setPets(data.content || data);
-      setPagination({
-        currentPage: data.number || 0,
-        pageSize: data.size || 10,
-        totalPages: data.totalPages || 0,
-        totalElements: data.totalElements || 0
-      });
-    } catch (err) {
-      setError(err.message);
-      setPets([]);
-    } finally {
-      setLoadingPets(false);
-    }
-  };
+        setPets(data.content || data);
+        setPagination({
+          currentPage: data.page || 0,
+          pageSize: data.size || 10,
+          totalPages: data.totalPages || 0,
+          totalElements: data.totalElements || 0
+        });
+      } catch (err) {
+        setError(err.message);
+        setPets([]);
+      } finally {
+        setLoadingPets(false);
+      }
+    },
+    [filters] // fetchPets changes when filters change
+  );
 
-  useEffect(() => {
-    fetchPets(0, pagination.pageSize); // Reset to page 0 when filters change
-  }, [filters]);
+    useEffect(() => {
+      fetchPets(0, pagination.pageSize); // Reset to page 0 when filters change
+    }, [filters, fetchPets, pagination.pageSize]);
 
   const handleFilterChange = (e) => {
     setFilters({
@@ -218,7 +220,7 @@ function PetDashboard() {
                   onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
                   className="p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
                 >
-                  <option value={5}>5 per page</option>
+                  <option value={2}>2 per page</option>
                   <option value={10}>10 per page</option>
                   <option value={20}>20 per page</option>
                   <option value={50}>50 per page</option>
