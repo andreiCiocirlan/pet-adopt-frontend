@@ -33,7 +33,7 @@ export default function AddAppointment() {
   useEffect(() => {
     // Fetch pets and users for select dropdowns
     Promise.all([
-      authFetch("http://localhost:8081/api/pets"),
+      authFetch("http://localhost:8081/api/pets?status=AVAILABLE"),
       authFetch("http://localhost:8081/api/users"),
     ])
       .then(async ([petsRes, usersRes]) => {
