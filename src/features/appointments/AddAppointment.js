@@ -41,7 +41,7 @@ export default function AddAppointment() {
         if (!usersRes.ok) throw new Error("Failed to fetch users");
         const petsData = await petsRes.json();
         const usersData = await usersRes.json();
-        setPets(petsData.content);
+        setPets(petsData.data);
         setUsers(usersData);
       })
       .catch((err) => setError(err.message));

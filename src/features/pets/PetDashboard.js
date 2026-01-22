@@ -52,14 +52,14 @@ function PetDashboard() {
 
       try {
         const response = await authFetch(fetchUrl);
-        const data = await response.json();
+        const petsData = await response.json();
 
-        setPets(data.content || data);
+        setPets(petsData.data || petsData);
         setPagination({
-          currentPage: data.page || 0,
-          pageSize: data.size || 10,
-          totalPages: data.totalPages || 0,
-          totalElements: data.totalElements || 0
+          currentPage: petsData.page || 0,
+          pageSize: petsData.size || 10,
+          totalPages: petsData.totalPages || 0,
+          totalElements: petsData.totalElements || 0
         });
       } catch (err) {
         setError(err.message);
