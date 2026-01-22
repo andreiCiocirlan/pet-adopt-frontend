@@ -20,7 +20,7 @@ function AdoptionCertificate() {
         }
 
         const petsData = await response.json();
-        setPets(petsData);
+        setPets(petsData.content);
       } catch (error) {
         setError(error.message);
       } finally {
