@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import { useNavigate } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
+import { authFetch } from "../auth/utils/authFetch";
 
 function LocationMarker({ position, setPosition, setAddress }) {
   useMapEvents({
@@ -46,7 +47,7 @@ export default function ClinicCreationForm() {
       longitude: position.lng,
     };
 
-    fetch("http://localhost:8081/api/clinics", {
+    authFetch("http://localhost:8081/api/clinics", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(clinicData),
