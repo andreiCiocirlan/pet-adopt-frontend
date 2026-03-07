@@ -8,7 +8,6 @@ const animalTypes = ["CAT", "DOG", "BIRD"];
 export default function EditPet() {
   const { petId } = useParams();
   const navigate = useNavigate();
-  const [clinics, setClinics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState({
     name: "",
@@ -16,7 +15,6 @@ export default function EditPet() {
     type: "",
     breed: "",
     characteristics: "",
-    clinicId: "",
     imageUrls: ["", "", ""],
     isNeutered: false,
     isVaccinated: false,
@@ -35,7 +33,6 @@ export default function EditPet() {
           type: pet.type,
           breed: pet.breed || "",
           characteristics: pet.characteristics || "",
-          clinicId: pet.clinic?.id || "",
           imageUrls: pet.imageUrls?.length > 0
             ? [...pet.imageUrls, ...Array(3 - pet.imageUrls.length).fill("")]
             : ["", "", ""],
@@ -50,14 +47,6 @@ export default function EditPet() {
         setLoading(false);
       });
   }, [petId]);
-
-  // Load clinics
-  useEffect(() => {
-    authFetch("http://localhost:8081/api/clinics")
-      .then(res => res.json())
-      .then(setClinics)
-      .catch(() => setError("Failed to load clinics"));
-  }, []);
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
@@ -83,7 +72,6 @@ export default function EditPet() {
       type: form.type,
       breed: form.breed,
       characteristics: form.characteristics,
-      clinicId: form.clinicId,
       imageUrls: form.imageUrls.filter(url => url.trim() !== ""),
       isNeutered: form.isNeutered,
       isVaccinated: form.isVaccinated,
@@ -248,23 +236,6 @@ export default function EditPet() {
               </span>
             </div>
           </div>
-        </div>
-
-        <div>
-          <label className="block font-semibold mb-1" htmlFor="clinicId">Clinic</label>
-          <select
-            id="clinicId"
-            name="clinicId"
-            value={form.clinicId}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
-          >
-            <option value="">Select a Clinic</option>
-            {clinics.map(clinic => (
-              <option key={clinic.id} value={clinic.id}>{clinic.name}</option>
-            ))}
-          </select>
         </div>
 
         <div>
