@@ -6,6 +6,7 @@ import Carousel from "./components/Carousel";
 import "./utils/leafletSetup";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import { Syringe, Cpu, Scissors } from "lucide-react";
 
 function PetDetails() {
   const { petId } = useParams();
@@ -78,7 +79,45 @@ function PetDetails() {
         <p><span className="font-semibold">Characteristics:</span> {pet.characteristics}</p>
         <p><span className="font-semibold">Breed:</span> {pet.breed}</p>
         <p><span className="font-semibold">Age:</span> {pet.age} years</p>
-        <p><span className="font-semibold">Health:</span> {pet.health}</p>
+
+        {/* ✅ New Medical & Care Status Section with Icons */}
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <h3 className="font-semibold text-gray-800 mb-3">Medical & Care Status</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Neutered/Spayed */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <Scissors className="w-6 h-6 text-blue-600" />
+              <div>
+                <p className="font-medium text-sm text-gray-600">Neutered/Spayed</p>
+                <p className={`font-semibold ${pet.isNeutered ? 'text-green-600' : 'text-red-600'}`}>
+                  {pet.isNeutered ? 'Yes' : 'No'}
+                </p>
+              </div>
+            </div>
+
+            {/* Vaccinated */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <Syringe className="w-6 h-6 text-red-600" />
+              <div>
+                <p className="font-medium text-sm text-gray-600">Vaccinated</p>
+                <p className={`font-semibold ${pet.isVaccinated ? 'text-green-600' : 'text-red-600'}`}>
+                  {pet.isVaccinated ? 'Yes' : 'No'}
+                </p>
+              </div>
+            </div>
+
+            {/* Microchipped */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <Cpu className="w-6 h-6 text-purple-600" />
+              <div>
+                <p className="font-medium text-sm text-gray-600">Microchipped</p>
+                <p className={`font-semibold ${pet.hasMicrochip ? 'text-green-600' : 'text-red-600'}`}>
+                  {pet.hasMicrochip ? 'Yes' : 'No'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {pet.clinic ? (

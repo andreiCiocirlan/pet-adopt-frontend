@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../auth/utils/authFetch";
+import { Scissors, Syringe, Cpu } from "lucide-react";
 
 const animalTypes = ["CAT", "DOG", "BIRD"];
 
@@ -16,6 +17,9 @@ export default function AddPet() {
     characteristics: "",
     clinicId: "",
     imageUrls: ["", "", ""],
+    isNeutered: false,
+    isVaccinated: false,
+    hasMicrochip: false,
   });
   const [error, setError] = useState(null);
 
@@ -27,8 +31,11 @@ export default function AddPet() {
   }, []);
 
   function handleChange(e) {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setForm(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
   }
 
   function handleImageUrlChange(index, value) {
@@ -41,17 +48,17 @@ export default function AddPet() {
     e.preventDefault();
     setError(null);
 
-    // Validate required fields here if you want
-
     const requestBody = {
       name: form.name,
       age: +form.age, // convert to number
       type: form.type,
       breed: form.breed,
-      health: form.health,
       characteristics: form.characteristics,
       clinicId: form.clinicId,
       imageUrls: form.imageUrls.filter(url => url.trim() !== ""),
+      isNeutered: form.isNeutered,
+      isVaccinated: form.isVaccinated,
+      hasMicrochip: form.hasMicrochip,
     };
 
     try {
@@ -136,17 +143,6 @@ export default function AddPet() {
         </div>
 
         <div>
-          <label className="block font-semibold mb-1" htmlFor="health">Health</label>
-          <textarea
-            id="health"
-            name="health"
-            value={form.health}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
-          />
-        </div>
-
-        <div>
           <label className="block font-semibold mb-1" htmlFor="characteristics">Characteristics</label>
           <textarea
             id="characteristics"
@@ -155,6 +151,70 @@ export default function AddPet() {
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
           />
+        </div>
+
+        {/* Medical & Care Status Section */}
+        <div className="border-t border-gray-200 pt-4 mt-4">
+          <h3 className="font-semibold text-gray-800 mb-3">Medical & Care Status</h3>
+
+          <div className="space-y-3">
+            {/* Neutered/Spayed */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <Scissors className="w-5 h-5 text-blue-600" />
+              <label className="flex items-center gap-2 flex-1 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="isNeutered"
+                  name="isNeutered"
+                  checked={form.isNeutered}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-600"
+                />
+                <span className="font-medium text-gray-700">Neutered/Spayed</span>
+              </label>
+              <span className={`font-semibold text-sm ${form.isNeutered ? 'text-green-600' : 'text-red-600'}`}>
+                {form.isNeutered ? 'Yes' : 'No'}
+              </span>
+            </div>
+
+            {/* Vaccinated */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <Syringe className="w-5 h-5 text-red-600" />
+              <label className="flex items-center gap-2 flex-1 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="isVaccinated"
+                  name="isVaccinated"
+                  checked={form.isVaccinated}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-600"
+                />
+                <span className="font-medium text-gray-700">Vaccinated</span>
+              </label>
+              <span className={`font-semibold text-sm ${form.isVaccinated ? 'text-green-600' : 'text-red-600'}`}>
+                {form.isVaccinated ? 'Yes' : 'No'}
+              </span>
+            </div>
+
+            {/* Microchipped */}
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              <Cpu className="w-5 h-5 text-purple-600" />
+              <label className="flex items-center gap-2 flex-1 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="hasMicrochip"
+                  name="hasMicrochip"
+                  checked={form.hasMicrochip}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-600"
+                />
+                <span className="font-medium text-gray-700">Microchipped</span>
+              </label>
+              <span className={`font-semibold text-sm ${form.hasMicrochip ? 'text-green-600' : 'text-red-600'}`}>
+                {form.hasMicrochip ? 'Yes' : 'No'}
+              </span>
+            </div>
+          </div>
         </div>
 
         <div>
