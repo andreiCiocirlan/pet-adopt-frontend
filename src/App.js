@@ -10,6 +10,7 @@ import {
 import PetDashboard from "./features/pets/PetDashboard";
 import PetDetails from "./features/pets/PetDetails";
 import AddPet from "./features/pets/AddPet";
+import EditPet from "./features/pets/EditPet";
 import AdoptionCertificate from "./features/pets/AdoptionCertificate";
 import AddClinic from "./features/clinic/AddClinic";
 import MyProfile from "./features/user/MyProfile";
@@ -148,6 +149,12 @@ function App() {
               <AddAppointment />
             </AdminRoute>
           }
+        />
+        <Route
+            path="/pets/:petId/edit"
+            element={
+                <EditPet />
+            }
         />
         <Route
           path="/add-pet"

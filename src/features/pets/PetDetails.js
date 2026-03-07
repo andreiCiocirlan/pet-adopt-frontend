@@ -184,18 +184,30 @@ function PetDetails() {
         )
       )}
 
-      {pet.status === "AVAILABLE" ? (
-        <button
-          onClick={handleMeetAndGreetClick}
-          className="mt-10 w-full max-w-xs px-6 py-3 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-400"
-        >
-          Meet and Greet
-        </button>
-      ) : (
-        <p className="mt-10 w-full max-w-xs px-6 py-3 bg-gray-400 text-white rounded-lg text-center cursor-not-allowed">
-          Not Available for Adoption
-        </p>
-      )}
+      <div className="mt-10 flex gap-40 justify-center">
+        {pet.status === "AVAILABLE" ? (
+          <button
+            onClick={handleMeetAndGreetClick}
+            className="px-6 py-3 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-400"
+          >
+            Meet and Greet
+          </button>
+        ) : (
+          <p className="px-6 py-3 bg-gray-400 text-white rounded-lg text-center cursor-not-allowed">
+            Not Available for Adoption
+          </p>
+        )}
+
+        {/* Edit Pet Button - Admin Only */}
+        {isAdmin && (
+          <button
+            onClick={() => navigate(`/pets/${pet.id}/edit`)}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-400"
+          >
+            Edit Pet
+          </button>
+        )}
+      </div>
     </div>
   );
 }
