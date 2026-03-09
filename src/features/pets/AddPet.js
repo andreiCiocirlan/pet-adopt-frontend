@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../auth/utils/authFetch";
 import { Scissors, Syringe, Cpu } from "lucide-react";
-import { BREEDS_BY_TYPE, BREED_DISPLAY_NAMES, getBreedsForType } from "./utils/breeds.js";
+import { BREED_DISPLAY_NAMES, getBreedsForType } from "./utils/breeds.js";
 
 const animalTypes = ["CAT", "DOG", "BIRD"];
 
@@ -89,7 +89,7 @@ export default function AddPet() {
     }
   }
 
-  const currentBreeds = form.type ? BREEDS_BY_TYPE[form.type] || [] : [];
+  const currentBreeds = getBreedsForType(form.type);
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow mt-8">
