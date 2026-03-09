@@ -8,7 +8,6 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(() => localStorage.getItem('accessToken'));
-  const [refreshToken, setRefreshToken] = useState(() => localStorage.getItem('refreshToken'));
   const [userId, setUserId] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
   const [roles, setRoles] = useState([]);
@@ -41,7 +40,6 @@ export const AuthProvider = ({ children }) => {
 
   const login = (data) => {
     setAccessToken(data.accessToken);
-    setRefreshToken(data.refreshToken);
     localStorage.setItem('accessToken', data.accessToken);
     localStorage.setItem('refreshToken', data.refreshToken);
     decodeToken(data.accessToken);
@@ -72,7 +70,6 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setAccessToken(null);
-    setRefreshToken(null);
     setUserId(null);
     setUserEmail(null);
     setRoles([]);
