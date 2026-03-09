@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { authFetch } from "../auth/utils/authFetch";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -27,7 +27,7 @@ export default function AdminAppointments() {
     return ""; // ALL
   }
 
-  function fetchAppointments(currentFilter) {
+  const fetchAppointments = useCallback((currentFilter) => {
     const query = buildStatusQuery(currentFilter);
     authFetch(`http://localhost:8081/api/appointments${query}`)
       .then(res => {
@@ -103,13 +103,13 @@ export default function AdminAppointments() {
         console.error(err);
         setError(err.message);
       });
-    }
+    }, []);
 
 
   useEffect(() => {
     if (!isAdmin) return;
     fetchAppointments(filterType);
-  }, [isAdmin, filterType]);
+  }, [isAdmin, filterType, fetchAppointments]);
 
   function updateAppointmentStatus(appointmentId, status) {
     authFetch(`http://localhost:8081/api/appointments/${appointmentId}/status`, {
