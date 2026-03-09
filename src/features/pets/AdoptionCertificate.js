@@ -68,7 +68,7 @@ function AdoptionCertificate() {
                   {pet.imageUrls && pet.imageUrls.length > 0 ? (
                     <img
                       src={pet.imageUrls[0]}
-                      alt={`Photo of ${pet.name}`}
+                      alt={pet.name}
                       className="mx-auto h-24 w-24 object-cover rounded"
                     />
                   ) : (
