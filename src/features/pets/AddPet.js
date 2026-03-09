@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authFetch } from "../auth/utils/authFetch";
 import { Scissors, Syringe, Cpu } from "lucide-react";
+import { BREEDS_BY_TYPE, BREED_DISPLAY_NAMES, getBreedsForType } from "./utils/breeds.js";
 
 const animalTypes = ["CAT", "DOG", "BIRD"];
 
@@ -29,6 +30,15 @@ export default function AddPet() {
       .then(setClinics)
       .catch(() => setError("Failed to load clinics"));
   }, []);
+
+  const handleTypeChange = (e) => {
+     const newType = e.target.value;
+     setForm(prev => ({
+       ...prev,
+       type: newType,
+       breed: ""  // Reset breed when type changes
+     }));
+  };
 
   function handleChange(e) {
     const { name, value, type, checked } = e.target;
@@ -79,6 +89,8 @@ export default function AddPet() {
     }
   }
 
+  const currentBreeds = form.type ? BREEDS_BY_TYPE[form.type] || [] : [];
+
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow mt-8">
       <h1 className="text-3xl mb-4 font-bold text-center">Add New Pet</h1>
@@ -119,7 +131,7 @@ export default function AddPet() {
             id="type"
             name="type"
             value={form.type}
-            onChange={handleChange}
+            onChange={handleTypeChange}
             required
             className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
           >
@@ -132,14 +144,23 @@ export default function AddPet() {
 
         <div>
           <label className="block font-semibold mb-1" htmlFor="breed">Breed</label>
-          <input
+          <select
             id="breed"
             name="breed"
-            type="text"
             value={form.breed}
             onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-600"
-          />
+            disabled={!form.type || currentBreeds.length === 0}
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-600 disabled:bg-gray-100 disabled:cursor-not-allowed"
+          >
+            <option value="">
+              {form.type ? 'Select a breed' : 'First select animal type'}
+            </option>
+            {currentBreeds.map((breedEnum) => (
+              <option key={breedEnum} value={breedEnum}>
+                {BREED_DISPLAY_NAMES[breedEnum] || breedEnum}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
