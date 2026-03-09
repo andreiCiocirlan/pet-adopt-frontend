@@ -7,6 +7,7 @@ import "./utils/leafletSetup";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Syringe, Cpu, Scissors } from "lucide-react";
+import { getBreedDisplayName } from "./utils/breeds.js";
 
 function PetDetails() {
   const { petId } = useParams();
@@ -77,7 +78,7 @@ function PetDetails() {
 
       <div className="text-gray-700 space-y-2">
         <p><span className="font-semibold">Characteristics:</span> {pet.characteristics}</p>
-        <p><span className="font-semibold">Breed:</span> {pet.breed}</p>
+        <p><span className="font-semibold">Breed:</span> {getBreedDisplayName(pet.breed)}</p>
         <p><span className="font-semibold">Age:</span> {pet.age} years</p>
 
         {/* ✅ New Medical & Care Status Section with Icons */}
