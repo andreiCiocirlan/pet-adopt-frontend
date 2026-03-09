@@ -9,7 +9,6 @@ const mapContainerStyle = { height: "200px", width: "100%" };
 
 export default function MyAppointments() {
   const { userId, roles } = useAuth();
-  const isAdmin = roles.includes("ROLE_ADMIN");
   const isUser = roles.includes("ROLE_USER");
 
   const [appointments, setAppointments] = useState([]);
