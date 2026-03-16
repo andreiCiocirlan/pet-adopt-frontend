@@ -81,7 +81,7 @@ function PetDetails() {
         <p><span className="font-semibold">Breed:</span> {getBreedDisplayName(pet.breed)}</p>
         <p><span className="font-semibold">Age:</span> {pet.age} years</p>
 
-        {/* ✅ New Medical & Care Status Section with Icons */}
+        {/* New Medical & Care Status Section with Icons */}
         <div className="mt-4 pt-4 border-t border-gray-200">
           <h3 className="font-semibold text-gray-800 mb-3">Medical & Care Status</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
