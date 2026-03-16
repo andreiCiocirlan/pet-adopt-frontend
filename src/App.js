@@ -12,6 +12,8 @@ import PetDetails from "./features/pets/PetDetails";
 import AddPet from "./features/pets/AddPet";
 import EditPet from "./features/pets/EditPet";
 import AdoptionCertificate from "./features/pets/AdoptionCertificate";
+import Notifications from "./features/notifications/Notifications";
+import { authFetch } from "./features/auth/utils/authFetch";
 import AddClinic from "./features/clinic/AddClinic";
 import MyProfile from "./features/user/MyProfile";
 import MyAppointments from "./features/appointments/MyAppointments";
@@ -30,6 +32,22 @@ function Navbar() {
    const isAdmin = roles.includes("ROLE_ADMIN");
    const isUser = roles.includes("ROLE_USER");
    const navigate = useNavigate();
+   const [unreadCount, setUnreadCount] = React.useState(0);
+
+   React.useEffect(() => {
+     if (!userId || isAdmin) {
+       setUnreadCount(0);
+       return;
+     }
+
+     authFetch(`http://localhost:8081/api/notifications/count`)
+       .then(res => {
+         if (!res.ok) throw new Error('Failed');
+         return res.json();
+       })
+       .then(data => setUnreadCount(data.unreadCount))
+       .catch(() => setUnreadCount(0));
+   }, [userId, isAdmin]);
 
    function handleLogout() {
      logout();
@@ -66,7 +84,7 @@ function Navbar() {
        </div>
 
        {/* Right side nav links */}
-       <div className="ml-auto flex gap-4 items-center">
+       <div className="ml-auto flex gap-4 items-center relative">
          {!userId && (
            <>
              <Link to="/register" className="hover:underline">
@@ -78,11 +96,23 @@ function Navbar() {
            </>
          )}
 
-        {userId && isAdmin && (
-          <span className="bg-yellow-300 text-yellow-900 text-xs font-semibold mr-3 px-2 py-1 rounded select-none">
-            ADMIN
-          </span>
-        )}
+         {userId && !isAdmin && (  // Show only for regular users, not admins
+             <div className="relative">
+               <Link to="/notifications" className="relative hover:opacity-80 transition">
+                 🔔
+                 {/* Dynamic unread count badge */}
+                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center text-[10px]">
+                   {unreadCount > 99 ? '99+' : unreadCount || 0}
+                 </span>
+               </Link>
+             </div>
+         )}
+
+         {userId && isAdmin && (
+           <span className="bg-yellow-300 text-yellow-900 text-xs font-semibold mr-3 px-2 py-1 rounded select-none">
+             ADMIN
+           </span>
+         )}
 
          {userId && (
            <button
@@ -178,6 +208,14 @@ function App() {
             <AdminRoute>
               <AdoptionCertificate />
             </AdminRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <ProtectedRoute>
+              <Notifications />
+            </ProtectedRoute>
           }
         />
         <Route
