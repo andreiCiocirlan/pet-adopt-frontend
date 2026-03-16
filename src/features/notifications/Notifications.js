@@ -108,71 +108,77 @@ export default function Notifications() {
   }, [fetchNotifications]);
 
   if (loading) {
-    return React.createElement('div', { className: "p-8 text-center" },
-      'Loading notifications...'
+    return (
+      <div className="p-8 text-center">
+        Loading notifications...
+      </div>
     );
   }
 
-  return React.createElement('div', { className: "max-w-4xl mx-auto p-6" }, [
-    React.createElement('div', { key: 'header', className: "flex justify-between items-center mb-6" }, [
-      React.createElement('h1', { key: 'title', className: "text-3xl font-bold text-gray-900" },
-        'Notifications'
-      ),
-      unreadCount > 0 && React.createElement('button', {
-        key: 'mark-all',
-        onClick: markAllAsRead,
-        className: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition font-medium"
-      }, `Mark all as read (${unreadCount})`)
-    ]),
+  return (
+    <div className="max-w-4xl mx-auto p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
+        {unreadCount > 0 && (
+          <button
+            onClick={markAllAsRead}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition font-medium"
+          >
+            Mark all as read ({unreadCount})
+          </button>
+        )}
+      </div>
 
-    error && React.createElement('div', {
-      key: 'error',
-      className: "bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
-    }, error),
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {error}
+        </div>
+      )}
 
-    notifications.length === 0 ? React.createElement('div', {
-      key: 'empty',
-      className: "text-center py-12 text-gray-500"
-    }, [
-      React.createElement('div', { key: 'icon', className: "text-4xl mb-4" }, '🔔'),
-      React.createElement('p', { key: 'text' }, 'No notifications yet.')
-    ]) : React.createElement('div', {
-      key: 'list',
-      className: "space-y-3"
-    }, notifications.map((notification) => {
-      const itemClass = notification.isRead
-        ? 'p-4 rounded-lg border bg-gray-100 border-gray-300 hover:bg-gray-200 opacity-60 cursor-default select-none transition-all'
-        : 'p-4 rounded-lg border-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-300 hover:shadow-lg hover:border-blue-400 transition-all cursor-pointer ring-1 ring-blue-200 hover:ring-blue-300';
+      {notifications.length === 0 ? (
+        <div className="text-center py-12 text-gray-500">
+          <div className="text-4xl mb-4">🔔</div>
+          <p>No notifications yet.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {notifications.map((notification) => {
+            const itemClass = notification.isRead
+              ? 'p-4 rounded-lg border bg-gray-100 border-gray-300 hover:bg-gray-200 opacity-60 cursor-default select-none transition-all'
+              : 'p-4 rounded-lg border-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-300 hover:shadow-lg hover:border-blue-400 transition-all cursor-pointer ring-1 ring-blue-200 hover:ring-blue-300';
 
-      return React.createElement('div', {
-        key: notification.id,
-        className: itemClass,
-        title: notification.isRead ? 'Read' : 'Unread'
-      }, [
-        React.createElement('div', {
-          key: 'content',
-          className: "flex justify-between items-start"
-        }, [
-          React.createElement('div', { key: 'text', className: "flex-1" }, [
-            React.createElement('p', {
-              key: 'message',
-              className: "font-medium text-gray-900 leading-relaxed"
-            }, notification.message),
-            React.createElement('p', {
-              key: 'meta',
-              className: "text-sm text-gray-500 mt-1"
-            }, `Appointment #${notification.appointmentId} • ${new Date(notification.createdAt).toLocaleString()}`)
-          ]),
-          !notification.isRead && React.createElement('button', {
-            key: 'read-btn',
-            onClick: (e) => {
-              e.stopPropagation();
-              markAsRead(notification.id);
-            },
-            className: "ml-4 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-all shadow-sm hover:shadow-md whitespace-nowrap"
-          }, 'Mark Read')
-        ])
-      ]);
-    }))
-  ]);
+            return (
+              <div
+                key={notification.id}
+                className={itemClass}
+                title={notification.isRead ? 'Read' : 'Unread'}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900 leading-relaxed">
+                      {notification.message}
+                    </p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Appointment #{notification.appointmentId} • {new Date(notification.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  {!notification.isRead && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        markAsRead(notification.id);
+                      }}
+                      className="ml-4 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-all shadow-sm hover:shadow-md whitespace-nowrap"
+                    >
+                      Mark Read
+                    </button>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
 }
