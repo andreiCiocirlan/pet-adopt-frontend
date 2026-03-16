@@ -65,7 +65,7 @@ export default function Notifications() {
     // 1. INSTANT visual update
     setNotifications(prev =>
       prev.map(notif =>
-        notif.id === notificationId ? { ...notif, read: true } : notif
+        notif.id === notificationId ? { ...notif, isRead: true } : notif
       )
     );
     setUnreadCount(prev => Math.max(0, prev - 1));
@@ -77,7 +77,7 @@ export default function Notifications() {
       // Revert only on error
       setNotifications(prev =>
         prev.map(notif =>
-          notif.id === notificationId ? { ...notif, read: false } : notif
+          notif.id === notificationId ? { ...notif, isRead: false } : notif
         )
       );
       setUnreadCount(prev => prev + 1);
@@ -89,7 +89,7 @@ export default function Notifications() {
     // 1. FORCE re-render by creating NEW array reference
     const allReadNotifications = notifications.map(notif => ({
       ...notif,
-      read: true
+      isRead: true
     }));
 
     setNotifications(allReadNotifications);  // Direct assignment triggers re-render
@@ -140,14 +140,14 @@ export default function Notifications() {
       key: 'list',
       className: "space-y-3"
     }, notifications.map((notification) => {
-      const itemClass = notification.read
+      const itemClass = notification.isRead
         ? 'p-4 rounded-lg border bg-gray-100 border-gray-300 hover:bg-gray-200 opacity-60 cursor-default select-none transition-all'
         : 'p-4 rounded-lg border-2 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-300 hover:shadow-lg hover:border-blue-400 transition-all cursor-pointer ring-1 ring-blue-200 hover:ring-blue-300';
 
       return React.createElement('div', {
         key: notification.id,
         className: itemClass,
-        title: notification.read ? 'Read' : 'Unread'
+        title: notification.isRead ? 'Read' : 'Unread'
       }, [
         React.createElement('div', {
           key: 'content',
@@ -163,7 +163,7 @@ export default function Notifications() {
               className: "text-sm text-gray-500 mt-1"
             }, `Appointment #${notification.appointmentId} • ${new Date(notification.createdAt).toLocaleString()}`)
           ]),
-          !notification.read && React.createElement('button', {
+          !notification.isRead && React.createElement('button', {
             key: 'read-btn',
             onClick: (e) => {
               e.stopPropagation();
