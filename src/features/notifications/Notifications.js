@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../auth/context/AuthContext";
 import { authFetch } from "../auth/utils/authFetch";
-import { useNavigate } from "react-router-dom";
 
 // API functions
 function notificationsApi(userId) {
@@ -28,7 +27,6 @@ function notificationsApi(userId) {
 
 export default function Notifications() {
   const { userId } = useAuth();
-  const navigate = useNavigate();
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
